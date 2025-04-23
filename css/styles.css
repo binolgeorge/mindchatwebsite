@@ -2775,6 +2775,21 @@ textarea.form-control {
     color: var(--text);
 }
 
+/* ---------- reference library ---------- */
+.research-category{
+    margin:32px 0 12px;
+    font-weight:600;
+    font-size:1.05rem;
+  }
+  .reference-list{
+    list-style-type:disc;
+    padding-left:20px;
+    font-size:0.95rem;
+  }
+  .reference-list li{
+    margin-bottom:6px;
+  }
+
 .faq-section {
     padding: 6rem 0;
     background-color: var(--white);
