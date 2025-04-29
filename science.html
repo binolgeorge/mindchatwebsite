@@ -92,7 +92,7 @@
             <div class="eeg-content">
                 <div class="eeg-text-content animate-fadeInUp">
                     <h3 class="eeg-text-title">How EEG Works in MindChat</h3>
-                    <p class="eeg-text">MindChat utilizes the MUSE EEG headset for non-invasive brainwave monitoring. While not a diagnostic tool for mental health disorders, these signals can serve as early indicators of changes in mental well-being, helping users understand their brain's responses.</p>
+                    <p class="eeg-text">MindChat utilizes the MUSE EEG headset for non-invasive brainwave monitoring. While not a diagnostic tool for mental health disorders, these EEG signals can serve as valuable **early indicators** of changes in mental well-being, helping users understand their brain's responses and track trends over time.</p>
                     <div class="eeg-features">
                         <div class="eeg-feature">
                             <div class="eeg-feature-icon">
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <h3 class="eeg-text-title">Why MUSE?</h3>
-                    <p class="eeg-text">We chose the Muse 2 after independent validation studies showed its 4-channel frontal sensors can capture EEG spectral power and frontal alpha asymmetry as accurately as research-grade systems<sup>1</sup>. It reliably measures the alpha, beta, and theta bands that MindChat analyses, while our algorithms filter out high-frequency noise.</p>
+                    <p class="eeg-text">We chose the Muse 2 after independent validation studies showed its 4-channel frontal sensors can capture EEG spectral power and frontal alpha asymmetry as accurately as research-grade systems<sup>1</sup>. It reliably measures the alpha, beta, and theta frequency bands crucial for MindChat's analysis of mood and stress correlates, while our proprietary algorithms work to minimize potential noise and artifacts.</p>
                     <p class="eeg-text" style="font-size:0.9em;"><sup>1</sup> Krigolson et al., 2017 IEEE EMBC; Rogala et al., 2020 Front Hum Neurosci.</p>
                 </div>
                 <div class="eeg-image animate-fadeInUp delay-2">
@@ -129,11 +129,9 @@
             <div class="concussion-header">
                 <div class="concussion-subtitle animate-fadeInUp">CONCUSSION INSIGHTS</div>
                 <h2 class="concussion-title animate-fadeInUp delay-1">Timely Concussion Screening<sup>*</sup></h2>
-                <p class="concussion-description animate-fadeInUp delay-2">MindChat streams EEG immediately after an impact and delivers an <strong>objective concussion&nbsp;screening</strong> within minutes. If the system flags a possible injury, coaches or medics can follow concussion-protocols right away and share the data with a physician.</p>
+                <p class="concussion-description animate-fadeInUp delay-2">MindChat can stream EEG immediately after a suspected impact and delivers an <strong>objective concussion&nbsp;screening</strong> within minutes. If the system flags a possible injury, coaches or medics can follow concussion-protocols right away and share the data with a physician.</p>
                 <p class="concussion-description animate-fadeInUp delay-2">MindChat’s cloud dashboard lets you <strong>securely share EEG reports and symptom trends with physicians or specialists in real time</strong>, supporting continuous care and meeting U.S. HIPAA safeguards / GDPR compliance.</p>
-                <p class="concussion-description" style="font-size:0.9em;">
-                    <em>Disclaimer:</em> MindChat screening is an adjunct to—not a substitute for—professional medical evaluation. Always follow recognized concussion-management protocols.
-                </p>
+                <p class="concussion-description" style="font-size:0.9em;"><em>Disclaimer:</em> MindChat's concussion feature provides data to assist awareness and is not a substitute for professional medical evaluation. Always follow recognized concussion management protocols and consult a clinician for diagnosis.</p>
             </div>
             <div class="concussion-content">
                 <div class="concussion-image animate-fadeInUp">
@@ -381,7 +379,7 @@
             <div class="alerts-header">
                 <div class="alerts-subtitle animate-fadeInUp">UNDERSTANDING INSIGHTS</div>
                 <h2 class="alerts-title animate-fadeInUp delay-1">Alert Interpretation Guide</h2>
-                <p class="alerts-description animate-fadeInUp delay-2">Learn what each alert means and how to take appropriate action to support your mental wellness.</p>
+                <p class="alerts-description animate-fadeInUp delay-2">Learn what each alert means and how to take appropriate action. MindChat issues different alerts based on specific brainwave patterns it detects, informed by scientific literature. For example:</p>
             </div>
             <div class="alerts-cards">
                 <div class="alert-card animate-fadeInUp">
@@ -390,7 +388,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         </div>
                         <h3 class="alert-title">Stress / Amxiety Alert</h3>
-                        <p class="alert-subtitle">Beta wave elevation detected</p>
+                        <p class="alert-subtitle">High Beta wave activity detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -420,7 +418,7 @@
                         <div class="alert-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5"></path><path d="M9 12h5"></path><path d="M16 12h5"></path><path d="M3 7h3"></path><path d="M3 17h3"></path><path d="M17 7h3"></path><path d="M17 17h3"></path><path d="M10 7h3"></path><path d="M10 17h3"></path></svg>
                         </div>
-                        <h3 class="alert-title">Emotional Imbalance Alert</h3>
+                        <h3 class="alert-title">Mood Regulation Alert</h3>
                         <p class="alert-subtitle">Frontal Alpha asymmetry detected</p>
                     </div>
                     <div class="alert-card-body">
@@ -456,7 +454,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a9.96 9.96 0 0 0-7.071 2.929c-3.905 3.905-3.905 10.237 0 14.142 3.905 3.905 10.237 3.905 14.142 0a9.996 9.996 0 0 0 2.929-7.071"></path><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
                         </div>
                         <h3 class="alert-title">Depression Risk Alert</h3>
-                        <p class="alert-subtitle">Persistent frontal alpha asymmetry</p>
+                        <p class="alert-subtitle">Pattern of frontal alpha asymmetry detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -535,32 +533,32 @@
         <div class="container case-study-container">
             <div class="case-study-header">
                 <div class="case-study-subtitle animate-fadeInUp">SUCCESS STORY</div>
-                <h2 class="case-study-title animate-fadeInUp delay-1">Case Study: Chris's Journey with MindChat</h2>
-                <p class="case-study-description animate-fadeInUp delay-2">Follow Chris's experience using MindChat's EEG insights and questionnaire tools to proactively manage his mental health.</p>
+                <h2 class="case-study-title animate-fadeInUp delay-1">Case Study: John's Journey with MindChat</h2>
+                <p class="case-study-description animate-fadeInUp delay-2">Follow John's experience using MindChat's EEG insights and questionnaire tools to proactively manage his mental health.</p>
             </div>
             <div class="case-study-content">
                 <div class="case-study-profile animate-fadeInUp">
-                    <img src="images/chris.jpg" alt="Chris" class="case-study-avatar">
-                    <h3 class="case-study-name">Chris</h3>
+                    <img src="" alt="" class="case-study-avatar">
+                    <h3 class="case-study-name">John Doe</h3>
                     <p class="case-study-role">MindChat User</p>
                     <p class="case-study-quote">MindChat gave me objective insights about my mental health patterns that I couldn't see on my own. The AI guidance combined with EEG data helped me take action at the right times.</p>
                 </div>
                 <div class="case-study-journey animate-fadeInUp delay-2">
                     <div class="journey-week">
                         <h3 class="journey-week-title">Week 1: Getting Started</h3>
-                        <p class="journey-week-text">Chris started with an EEG scan and completed the PHQ-9 questionnaire, both indicating moderate depression. He consulted MindChat's AI avatar, which offered evidence-based suggestions, such as journaling and mindfulness techniques to begin addressing his symptoms.</p>
+                        <p class="journey-week-text">John started with an EEG scan and completed the PHQ-9 questionnaire, both indicating moderate depression. He consulted MindChat's AI avatar, which offered evidence-based suggestions, such as journaling and mindfulness techniques to begin addressing his symptoms.</p>
                     </div>
                     <div class="journey-week">
                         <h3 class="journey-week-title">Week 2: Building Consistency</h3>
-                        <p class="journey-week-text">Chris continued monitoring and checking in with the AI avatar for additional advice. Based on scientific studies, the avatar recommended physical activity and a regular sleep routine, which Chris adopted to support his mental health improvement journey.</p>
+                        <p class="journey-week-text">John continued monitoring and checking in with the AI avatar for additional advice. Based on scientific studies, the avatar recommended physical activity and a regular sleep routine, which John adopted to support his mental health improvement journey.</p>
                     </div>
                     <div class="journey-week">
                         <h3 class="journey-week-title">Weeks 3 & 4: Professional Support</h3>
-                        <p class="journey-week-text">With similar results continuing, Chris scheduled an appointment with a mental health professional. Alongside his therapy, he used MindChat's tools bi-weekly, sharing his data with his therapist for more tailored support and treatment planning.</p>
+                        <p class="journey-week-text">With similar results continuing, John scheduled an appointment with a mental health professional. Alongside his therapy, he used MindChat's tools bi-weekly, sharing his data with his therapist for more tailored support and treatment planning.</p>
                     </div>
                     <div class="journey-outcome">
                         <h3 class="journey-outcome-title">The Results</h3>
-                        <p class="journey-outcome-text">Over time, Chris saw measurable improvements in his EEG and questionnaire results. With MindChat's insights, guidance from the AI avatar, and professional support, he felt empowered to manage his mental health consistently and effectively. The objective data helped both Chris and his therapist track progress and adjust approaches as needed.</p>
+                        <p class="journey-outcome-text">Over time, John saw measurable improvements in his EEG and questionnaire results. With MindChat's insights, guidance from the AI avatar, and professional support, he felt empowered to manage his mental health consistently and effectively. The objective data helped both John and his therapist track progress and adjust approaches as needed.</p>
                     </div>
                 </div>
             </div>
@@ -576,7 +574,7 @@
             <h2 class="research-title">Research & Validation</h2>
             <p class="research-description">
           MindChat is built on peer-reviewed evidence across clinical psychology, EEG neuroscience
-          and digital therapeutics. Key references are grouped below for easy audit.
+          and digital therapeutics. Key references informing our approach are grouped below.
             </p>
         </div>
   
@@ -686,7 +684,7 @@
         </ul>
 
         <p style="font-size:0.85em;color:gray;margin-top:25px;">
-            *These citations inform MindChat’s development. The platform itself is not a licensed medical diagnostic device.
+            *This list represents key studies informing MindChat’s development and feature set. It is not exhaustive. MindChat itself is a non-diagnostic support tool and not a licensed medical device. Always consult a qualified professional for diagnosis and treatment.
         </p>
         </div>
     </section>
@@ -784,29 +782,6 @@
         </div>
     </section>
 
-    <section id="scientific-references" class="section">
-        <div class="container">
-          <h2 class="section-title">Scientific References</h2>
-          <ul class="reference-list">
-            <li>
-              <strong>Muse EEG Validation:</strong> 
-              Validation of a Low-Cost, Portable EEG System for ERP Research. 
-              <a href="https://pubmed.ncbi.nlm.nih.gov/28344546/" target="_blank">PubMed</a>
-            </li>
-            <li>
-              <strong>PHQ-9 Validation:</strong> 
-              The PHQ-9: Validity of a Brief Depression Severity Measure. 
-              <a href="https://pubmed.ncbi.nlm.nih.gov/11556941/" target="_blank">PubMed</a>
-            </li>
-            <li>
-              <strong>BAI Validation:</strong> 
-              Validity and Reliability of the Beck Anxiety Inventory (BAI) for Family Caregivers of Children with Cancer. 
-              <a href="https://pubmed.ncbi.nlm.nih.gov/33114144/" target="_blank">PubMed</a>
-            </li>
-          </ul>
-        </div>
-      </section>
-      
  <!-- FOOTER -->
  <footer class="footer">
     <div class="container footer-container">
