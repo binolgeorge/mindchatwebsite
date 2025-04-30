@@ -186,13 +186,16 @@ p {
 
 .btn-outline {
     background-color: transparent;
-    color: var(--white);
-    border: 2px solid var(--white);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    transition: all 0.3s ease;
 }
 
 .btn-outline:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-3px);
+    background-color: var(--primary); 
+    color: var(--white); 
+    border-color: var(--primary); 
+    transform: translateY(-3px); 
 }
 
 /* Navbar */
@@ -376,6 +379,25 @@ p {
     display: flex;
     gap: 1rem;
     margin-bottom: 2.5rem;
+}
+
+.hero-buttons a.btn.btn-outline {
+    color: var(--primary) !important; 
+    border-color: var(--primary) !important; 
+}
+  
+.hero-buttons a.btn.btn-outline svg {
+    stroke: var(--primary) !important; 
+}
+  
+.hero-buttons a.btn.btn-outline:hover {
+      background-color: var(--primary);
+      color: var(--white) !important; 
+      border-color: var(--primary);
+}
+  
+.hero-buttons a.btn.btn-outline:hover svg {
+    stroke: var(--white) !important; 
 }
 
 .hero-badges {
@@ -838,13 +860,16 @@ p {
     padding: 1.5rem;
     border-radius: var(--border-radius-sm);
     margin-bottom: 1.5rem;
+    margin-top: 1rem;
 }
 
 .industry-results-title {
-    font-size: 1rem;
-    margin-bottom: 1rem;
+    font-size: 1rem; 
+    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
+    color: var(--text-light); 
+    font-weight: 600;
 }
 
 .industry-results-title svg {
@@ -853,21 +878,27 @@ p {
 }
 
 .industry-result {
-    display: flex;
-    align-items: baseline;
-    margin-bottom: 0.75rem;
+    display: block; 
+    margin-bottom: 1.2rem; 
+    text-align: left;
 }
 
 .industry-result-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-right: 0.75rem;
+    display: block; 
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    color: var(--primary); 
+    margin-bottom: 0.3rem; 
+    line-height: 1.3;
 }
 
 .industry-result-text {
-    font-size: 0.9rem;
-    color: var(--text);
+    display: block; 
+    font-size: 0.9rem; 
+    font-weight: 400; 
+    color: var(--text); 
+    line-height: 1.4;
+    margin-left: 0; 
 }
 
 /* IP Section */
@@ -2280,6 +2311,7 @@ textarea.form-control {
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     margin-top: 3rem;
+    align-items: start;
 }
 
 .concussion-image {
@@ -2774,6 +2806,21 @@ textarea.form-control {
     font-size: 0.95rem;
     color: var(--text);
 }
+
+/* ---------- reference library ---------- */
+.research-category{
+    margin:32px 0 12px;
+    font-weight:600;
+    font-size:1.05rem;
+  }
+  .reference-list{
+    list-style-type:disc;
+    padding-left:20px;
+    font-size:0.95rem;
+  }
+  .reference-list li{
+    margin-bottom:6px;
+  }
 
 .faq-section {
     padding: 6rem 0;
@@ -4881,3 +4928,5 @@ p {
         font-size: 2rem;
     }
 }
+
+

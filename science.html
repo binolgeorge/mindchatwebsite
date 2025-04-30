@@ -55,7 +55,8 @@
                     Evidence-Based Technology
                 </div>
                 <h1 class="hero-title">The Science Behind <span>MindChat</span></h1>
-                <p class="hero-subtitle">Discover how our cutting-edge AI and EEG technology work together to provide reliable insights into mental health and concussion detection.</p>
+                <p class="hero-subtitle">Discover how our AI and EEG technology integrate to provide insights supporting mental wellness and concussion awareness, grounded in scientific research.</p>
+                <p class="disclaimer-text" style="font-size:0.9em;color:gray;">*MindChat provides monitoring insights and awareness support. It is <strong>not</strong> a diagnostic tool or medical device. Always consult a qualified healthcare professional for diagnosis and treatment.</p>
                 <a href="#eeg" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54Z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54Z"></path></svg>
                     Explore EEG Technology
@@ -91,7 +92,7 @@
             <div class="eeg-content">
                 <div class="eeg-text-content animate-fadeInUp">
                     <h3 class="eeg-text-title">How EEG Works in MindChat</h3>
-                    <p class="eeg-text">MindChat utilizes the MUSE EEG headset for non-invasive brainwave monitoring. While not a diagnostic tool for mental health disorders, these signals can serve as early indicators of changes in mental well-being, helping users understand their brain's responses.</p>
+                    <p class="eeg-text">MindChat integrates with compatible EEG headsets like Muse 2 for non-invasive brainwave monitoring. While <strong>not a diagnostic tool</strong>, EEG signals offer objective physiological data points. These can correlate with changes in mental state (like stress or mood shifts), acting as potential indicators alongside self-reports.</p>
                     <div class="eeg-features">
                         <div class="eeg-feature">
                             <div class="eeg-feature-icon">
@@ -107,14 +108,16 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                             </div>
                             <div class="eeg-feature-content">
-                                <h4>Beta and Gamma Activity Monitoring</h4>
-                                <p>Elevated levels of beta and gamma waves often correlate with stress and heightened mental strain. MindChat uses these markers to alert you to potential stress, encouraging early intervention.</p>
+                                <h4>Beta Activity Monitoring</h4>
+                                <p>Elevated beta waves&nbsp;(13–30&nbsp;Hz)&nbsp;reliably track acute stress and hyper-arousal, so MindChat relies on beta metrics for real-time stress or anxiety alerts. Gamma&nbsp;(&gt;30 Hz) is displayed only when high-quality data are available and should be considered <em>exploratory</em> due to hardware noise constraints.</p>
+                                <h4 style="margin-top: 1rem; color: var(--primary);">Important Considerations:</h4>
+                                <p class="eeg-text" style="font-size:0.9em;">Consumer EEG devices like Muse are sensitive to artifacts (muscle tension, eye blinks). MindChat employs signal processing techniques, but results are most reliable under calm conditions. EEG patterns show correlations, not causation, and interpretation requires context. Gamma band data (>30Hz) is highly susceptible to noise on consumer hardware and should be viewed as exploratory.</p>
                             </div>
                         </div>
                     </div>
                     <h3 class="eeg-text-title">Why MUSE?</h3>
-                    <p class="eeg-text">Although designed for non-clinical use, the MUSE headset has been validated as a reliable EEG tool. MindChat analyzes MUSE data to detect patterns that may suggest the need for further mental health exploration, making it accessible and practical for everyday use.</p>
-                </div>
+                    <p class="eeg-text">We selected the Muse 2 based on independent studies indicating its capability to capture key metrics like frontal alpha asymmetry and basic spectral power (alpha, beta, theta) comparable to some research systems under specific conditions<sup>1</sup>. This allows MindChat to analyze relevant correlates of mood and stress, while our algorithms work to mitigate potential noise.</p>
+                    <p class="eeg-text" style="font-size:0.9em;"><strong>Source:</strong> <sup>1</sup> Krigolson et al., 2017 Front Neurosci; Rogala et al., 2020 Front Hum Neurosci.</p>                </div>
                 <div class="eeg-image animate-fadeInUp delay-2">
                     <img src="images/peak.png" alt="EEG Technology Visualization" class="eeg-img">
                 </div>
@@ -125,63 +128,76 @@
     <section class="concussion-section" id="concussion">
         <div class="container concussion-container">
             <div class="concussion-header">
-                <div class="concussion-subtitle animate-fadeInUp">CONCUSSION INSIGHTS</div>
-                <h2 class="concussion-title animate-fadeInUp delay-1">Advanced Concussion Detection</h2>
-                <p class="concussion-description animate-fadeInUp delay-2">MindChat's EEG technology provides objective measurements that can help identify the neurological changes associated with concussions, often before symptoms are fully apparent.</p>
-            </div>
+                <div class="concussion-subtitle animate-fadeInUp">POST-IMPACT EEG MONITORING</div>
+                <h2 class="concussion-title animate-fadeInUp delay-1">Supporting Concussion Awareness with EEG Data<sup>*</sup></h2>
+                <p class="concussion-description animate-fadeInUp delay-2" style="font-weight: 600; color: var(--warning);"><sup>*</sup>Disclaimer: MindChat provides EEG data to support awareness after a suspected impact. It is <strong>NOT a diagnostic tool for concussion</strong> and cannot replace evaluation by a qualified healthcare professional. Always follow established concussion protocols.</p> <!-- Moved Disclaimer Up & Strengthened -->
+                <p class="concussion-description animate-fadeInUp delay-2">Following a suspected impact, MindChat allows for immediate EEG data capture. Our analysis identifies potential changes in EEG biomarkers associated with neurological disruption, providing <strong>objective data points within minutes to supplement observational checks</strong>. This information can assist personnel in following appropriate concussion protocols and facilitate informed communication with medical providers.</p>
+                <p class="concussion-description animate-fadeInUp delay-2">Securely share EEG reports and trend data via the MindChat dashboard (platform meets relevant HIPAA technical safeguards / GDPR compliance) to support ongoing assessment by specialists.</p>            </div>
             <div class="concussion-content">
                 <div class="concussion-image animate-fadeInUp">
                     <img src="images/consussion.png" alt="Concussion Detection Technology" class="concussion-img">
                 </div>
+                
                 <div class="concussion-text-content animate-fadeInUp delay-2">
-                    <h3 class="concussion-text-title">EEG Biomarkers for Concussion</h3>
-                    <p class="concussion-text">Concussions cause measurable changes in brain electrical activity that can be detected through EEG. MindChat identifies several key biomarkers associated with traumatic brain injuries:</p>
-                    
+                    <h3 class="concussion-text-title">EEG Biomarkers Associated with Concussion</h3> 
+                    <p class="concussion-text">Following head impacts, concussions can cause measurable changes in the brain's electrical activity. MindChat analyzes EEG data for patterns that have been associated with such neurological disruptions in research literature:</p> 
+
                     <div class="eeg-features">
+                        <!-- Biomarker 1: Power Spectrum -->
                         <div class="eeg-feature">
                             <div class="eeg-feature-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                             </div>
                             <div class="eeg-feature-content">
-                                <h4>Power Spectrum Changes</h4>
-                                <p>Following concussion, there's typically an increase in slow-wave (delta and theta) activity and a reduction in faster waves (alpha and beta). These power spectrum alterations can be detected even when traditional symptoms aren't apparent.</p>
+                                <h4>Power Spectrum Analysis</h4> 
+                                <p>Concussion research often associates impacts with changes in EEG power, such as potential increases in slow-wave activity (delta/theta) and decreases in faster waves (alpha/beta). MindChat analyzes the power spectrum for patterns that may correlate with these reported post-impact changes, offering data points for consideration alongside clinical signs.</p>
                             </div>
                         </div>
+
+                        <!-- Biomarker 2: Functional Connectivity -->
                         <div class="eeg-feature">
                             <div class="eeg-feature-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
                             </div>
                             <div class="eeg-feature-content">
-                                <h4>Functional Connectivity Disruptions</h4>
-                                <p>Concussions disrupt the normal patterns of communication between brain regions. MindChat detects these connectivity anomalies, which are often present before clinical symptoms manifest.</p>
+                                <h4>Functional Connectivity Patterns</h4>
+                                <p>Research suggests concussions can alter typical communication patterns (functional connectivity) between brain regions. MindChat evaluates connectivity metrics, looking for deviations from baseline or expected patterns that have been associated with post-concussion states in scientific literature.</p>
                             </div>
                         </div>
+
+                        <!-- Biomarker 3: Task-Related Activity -->
                         <div class="eeg-feature">
                             <div class="eeg-feature-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12H3"></path><path d="M8 12V8"></path><path d="M16 12v-4"></path><path d="M12 12v4"></path></svg>
                             </div>
                             <div class="eeg-feature-content">
-                                <h4>Event-Related Potential (ERP) Changes</h4>
-                                <p>MindChat analyzes specific brain responses to tasks and stimuli, which can reveal cognitive processing issues after concussion, particularly in attention and information processing.</p>
+                                <h4>Task-Related Activity Analysis</h4> 
+                                <p>MindChat analyzes brain responses during specific cognitive tasks (when available). Changes in these response patterns can sometimes indicate altered cognitive processing speed or attention, which are known potential correlates following concussion.</p>
                             </div>
                         </div>
-                    </div>
-                    
-                    <h3 class="concussion-text-title">Why Early Detection Matters</h3>
-                    <p class="concussion-text">Many concussions go undetected using traditional methods, especially when they occur without direct head trauma. MindChat's objective measurements help identify concussions early, potentially preventing secondary injuries and long-term complications.</p>
-                    
+                    </div> 
+
+                    <h3 class="concussion-text-title">Why Objective Data Matters</h3> 
+                    <p class="concussion-text">Because concussion symptoms are not always immediately apparent, objective EEG data captured soon after a potential impact can provide valuable supplementary information to aid awareness and support timely implementation of appropriate management protocols.</p> 
+
                     <div class="concussion-stats">
                         <div class="concussion-stat">
-                            <div class="concussion-stat-number">50%</div>
-                            <div class="concussion-stat-text">of concussions go undetected using traditional methods</div>
+                            <div class="concussion-stat-number">>50%<sup>2</sup></div>
+                            <div class="concussion-stat-text">of concussions may go unreported or undetected by traditional methods</div>
                         </div>
                         <div class="concussion-stat">
-                            <div class="concussion-stat-number">30%</div>
-                            <div class="concussion-stat-text">of concussions lead to persistent symptoms when not properly managed</div>
+                            <div class="concussion-stat-number">~30%<sup>3</sup></div>
+                            <div class="concussion-stat-text">of concussions may lead to persistent symptoms if not properly managed</div>
                         </div>
                     </div>
+
+                    <p style="font-size:0.8em;color:var(--text-light);margin-top:0.5rem;">
+                       <strong>Sources:</strong> <sup>2</sup> e.g., UPMC Sports Med. report. <sup>3</sup> Based on CDC data/guidelines. See also: <sup>†</sup>Maas et al., 2017 Lancet Neurol (Global TBI estimate); <sup>‡</sup>Bazarian et al., 2020 Front Neurol (Example EEG device study).
+                    </p>
+
+                </div> 
+                
                 </div>
-            </div>
         </div>
     </section>
 
@@ -231,12 +247,84 @@
                     </div>
                     <h3 class="brainwave-name">Gamma</h3>
                     <p class="brainwave-frequency">30–100 Hz</p>
-                    <p class="brainwave-description">Associated with high-level information processing and anxiety. Gamma waves play a role in peak cognitive performance but can also indicate stress.</p>
+                    <p class="brainwave-description">Linked to high-level information processing. Because Muse sensors are noisy above 30 Hz, MindChat reports gamma only as an <em>exploratory</em> trend.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <section class="metrics-section" id="metrics" style="padding:6rem 0;background:#f8f9fe;">
+        <div class="container metrics-container">
+    
+            <div class="metrics-header" style="text-align:center;margin-bottom:3rem;">
+                <div class="metrics-subtitle" style="color:var(--primary);font-weight:600;letter-spacing:1px;">HOW WE READ YOUR BRAIN</div>
+                <h2 class="metrics-title" style="font-size:2.5rem;">The Science Behind Our Metrics</h2>
+                <p class="metrics-description" style="max-width:760px;margin:0 auto;color:var(--text-light);">
+                    Every MindChat alert is anchored in peer-reviewed EEG literature curated by our Chief Neuroscientist.  
+                    Here are the key biomarkers we track&nbsp;<span style="font-size:0.9em;">(<a href="#research">see full reference list</a>)</span>.
+                </p>
+            </div>
+    
+            <div class="metrics-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;">
+                <!-- Alpha -->
+                <div class="metric-card" style="background:var(--white);border-radius:var(--border-radius);box-shadow:var(--shadow-sm);padding:1.8rem;">
+                    <h3 style="color:var(--primary);margin-bottom:0.5rem;">Alpha&nbsp;(8-12 Hz)</h3>
+                    <p style="margin:0;">
+                        Typically higher during relaxation and lower during anxiety.<br>
+                        <em>MindChat watch-point&nbsp;→ Sustained alpha drop may correlate with rising stress<sup>4</sup>.</em>
+                    </p>
+                </div>
+    
+                <!-- Beta -->
+                <div class="metric-card" style="background:var(--white);border-radius:var(--border-radius);box-shadow:var(--shadow-sm);padding:1.8rem;">
+                    <h3 style="color:var(--accent);margin-bottom:0.5rem;">Beta&nbsp;(13-30 Hz)</h3>
+                    <p style="margin:0;">
+                        Increases with focused thinking, workload or acute stress.<br>
+                        <em>MindChat watch-point&nbsp;→ beta spikes trigger a Stress / Anxiety alert<sup>5</sup>.</em>
+                    </p>
+                </div>
+    
+                <!-- Frontal Alpha Asymmetry -->
+                <div class="metric-card" style="background:var(--white);border-radius:var(--border-radius);box-shadow:var(--shadow-sm);padding:1.8rem;">
+                    <h3 style="color:var(--secondary);margin-bottom:0.5rem;">Frontal Alpha Asymmetry</h3>
+                    <p style="margin:0;">
+                        Imbalance between left &amp; right frontal alpha is linked to mood regulation and
+                        depression-risk<sup>6</sup>.<br>
+                        <em>MindChat watch-point&nbsp;→ persistent asymmetry raises a Depression Risk alert.</em>
+                    </p>
+                </div>
+            </div>
+    
+            <!-- ========== Example AI-avatar response ========== -->
+            <div class="ai-example" style="margin-top:2.5rem;max-width:760px;margin-left:auto;margin-right:auto;">
+                <h3 style="text-align:center;margin-bottom:1.2rem;">Example AI Coach Reply – Mood Concern</h3>
+              
+                <div style="background:var(--light);border-left:4px solid var(--primary);padding:1.5rem;border-radius:var(--border-radius-sm);">
+                    <p style="margin:0;"><strong>John Doe:</strong> “MindChat says my depression risk is high—what can I do?”</p>
+              
+                    <p style="margin:0;"><em>MindChat AI Coach voice:</em> Your result show a potential persistent left-frontal alpha asymmetry pattern, a biomarker linked to low mood<sup>7</sup>. This is a <u>risk indicator</u>, not a diagnosis. Research-backed steps that often help include:</p>
+                    <ul style="margin:0 0 0.6rem 1.2rem;">
+                        <li>30 min of moderate exercise most days. A meta-analysis reported a 26 % mean reduction in depressive symptoms (Schuch et al., 2016)<sup>8</sup>.</li>
+                        <li>Daily “pleasant-event scheduling” (behavioural activation)<sup>9</sup>.</li>
+                        <li>Two sessions of slow diaphragmatic breathing; an 8-week trial lowered depression scores significantly (Zaccaro et al., 2018)<sup>10</sup>.</li>
+                    </ul>
+                    <p style="margin:0;">If low mood persists or worsens, please consider consulting a mental-health professional. Let me know if you need more examples or recommendations.</p>
+                </div>
+              </div>
+    
+            <!-- Footnotes -->
+            <p style="font-size:0.8em;color:var(--text-light);margin-top:3rem;">
+                <strong>Sources:</strong>
+                 <sup>4</sup> Thibodeau et al., 2006 J Abnorm Psychol.  
+                 <sup>5</sup> Patel et al., 2019 NeuroImage.  
+                 <sup>6, 7</sup> van der Vinne et al., 2017 NeuroImage Clin.  
+                 <sup>8</sup> Schuch et al., 2016 Sports Med.  
+                 <sup>9</sup> Mazzucchelli et al., 2009 Clin Psych Rev.  
+                 <sup>10</sup> Zaccaro et al., 2018 Front Psychol.
+             </p>
+        </div>
+    </section>
+  
     <section class="dataflow-section">
         <div class="container dataflow-container">
             <div class="dataflow-header">
@@ -251,8 +339,8 @@
                         <div class="dataflow-step-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54Z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54Z"></path></svg>
                         </div>
-                        <h3 class="dataflow-step-title">EEG Signal Detection</h3>
-                        <p class="dataflow-step-description">Capturing brainwave activity via the MUSE headset through non-invasive electrodes placed on the scalp.</p>
+                        <h3 class="dataflow-step-title">EEG Signal Capture</h3>
+                        <p class="dataflow-step-description">Capturing brainwave activity via compatible EEG headsets.</p>
                     </div>
                 </div>
                 <div class="dataflow-step animate-fadeInUp delay-1">
@@ -262,7 +350,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
                         </div>
                         <h3 class="dataflow-step-title">Data Processing & Analysis</h3>
-                        <p class="dataflow-step-description">Signal cleaning and artifact rejection using advanced algorithms to ensure data quality and reliability.</p>
+                        <p class="dataflow-step-description">Signal cleaning and artifact rejection using advanced algorithms.</p>
                     </div>
                 </div>
                 <div class="dataflow-step animate-fadeInUp delay-2">
@@ -271,8 +359,8 @@
                         <div class="dataflow-step-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
                         </div>
-                        <h3 class="dataflow-step-title">Alert Generation</h3>
-                        <p class="dataflow-step-description">Identifying significant patterns indicating stress, anxiety, depression, or potential concussion markers.</p>
+                        <h3 class="dataflow-step-title">Pattern Identification</h3>
+                        <p class="dataflow-step-description">Identifying patterns potentially associated with stress, mood changes, or post-impact effects.</p>
                     </div>
                 </div>
                 <div class="dataflow-step animate-fadeInUp delay-3">
@@ -281,8 +369,8 @@
                         <div class="dataflow-step-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </div>
-                        <h3 class="dataflow-step-title">User Guidance</h3>
-                        <p class="dataflow-step-description">Providing personalized, science-based recommendations for next steps based on detected patterns.</p>
+                        <h3 class="dataflow-step-title">Insight & Guidance</h3>
+                        <p class="dataflow-step-description">Providing personalized, science-based context and recommendations.</p>
                     </div>
                 </div>
             </div>
@@ -294,7 +382,7 @@
             <div class="alerts-header">
                 <div class="alerts-subtitle animate-fadeInUp">UNDERSTANDING INSIGHTS</div>
                 <h2 class="alerts-title animate-fadeInUp delay-1">Alert Interpretation Guide</h2>
-                <p class="alerts-description animate-fadeInUp delay-2">Learn what each alert means and how to take appropriate action to support your mental wellness.</p>
+                <p class="alerts-description animate-fadeInUp delay-2">Learn what each alert means and how to take appropriate action. MindChat issues different alerts based on specific brainwave patterns it detects, informed by scientific literature. For example:</p>
             </div>
             <div class="alerts-cards">
                 <div class="alert-card animate-fadeInUp">
@@ -302,8 +390,8 @@
                         <div class="alert-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         </div>
-                        <h3 class="alert-title">Stress Alert</h3>
-                        <p class="alert-subtitle">Beta wave elevation detected</p>
+                        <h3 class="alert-title">Stress / Amxiety Alert</h3>
+                        <p class="alert-subtitle">High Beta wave activity detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -311,7 +399,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                                 What It Means
                             </h4>
-                            <p class="alert-text">Elevated beta waves indicate increased stress levels. This pattern suggests your brain is in a heightened state of alertness or strain.</p>
+                            <p class="alert-text">Elevated beta waves are often associated with increased mental activity, which can include stress or focused concentration. This pattern suggests a state of heightened alertness or cognitive load.</p>
                         </div>
                         <div class="alert-section">
                             <h4 class="alert-section-title">
@@ -333,8 +421,8 @@
                         <div class="alert-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5"></path><path d="M9 12h5"></path><path d="M16 12h5"></path><path d="M3 7h3"></path><path d="M3 17h3"></path><path d="M17 7h3"></path><path d="M17 17h3"></path><path d="M10 7h3"></path><path d="M10 17h3"></path></svg>
                         </div>
-                        <h3 class="alert-title">Anxiety Alert</h3>
-                        <p class="alert-subtitle">Alpha asymmetry detected</p>
+                        <h3 class="alert-title">Mood Regulation Alert</h3>
+                        <p class="alert-subtitle">Frontal Alpha asymmetry detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -342,7 +430,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                                 What It Means
                             </h4>
-                            <p class="alert-text">Alpha asymmetry patterns are associated with anxiety states. This brainwave pattern shows an imbalance in frontal alpha activity between hemispheres.</p>
+                            <p class="alert-text">Research links significant frontal alpha asymmetry with tendencies toward certain mood regulation patterns, sometimes associated with anxiety or depression risk. This is an indicator for awareness, <strong>not</strong> a diagnosis.</p>
                         </div>
                         <div class="alert-section">
                             <h4 class="alert-section-title">
@@ -368,8 +456,8 @@
                         <div class="alert-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a9.96 9.96 0 0 0-7.071 2.929c-3.905 3.905-3.905 10.237 0 14.142 3.905 3.905 10.237 3.905 14.142 0a9.996 9.996 0 0 0 2.929-7.071"></path><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
                         </div>
-                        <h3 class="alert-title">Depression Alert</h3>
-                        <p class="alert-subtitle">Persistent alpha asymmetry</p>
+                        <h3 class="alert-title">Depression Risk Alert</h3>
+                        <p class="alert-subtitle">Pattern of frontal alpha asymmetry detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -377,7 +465,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                                 What It Means
                             </h4>
-                            <p class="alert-text">Persistent alpha asymmetry patterns are linked to low mood and depression. This pattern shows a consistent imbalance in frontal brain activity over time.</p>
+                            <p class="alert-text">Studies associate sustained frontal alpha asymmetry with increased vulnerability to depressive mood states. Consider this alert a prompt for self-reflection and potential consultation with a professional if concerns persist. It is not a clinical diagnosis.</p>
                         </div>
                         <div class="alert-section">
                             <h4 class="alert-section-title">
@@ -416,7 +504,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                                 What It Means
                             </h4>
-                            <p class="alert-text">Significant changes in power spectrum, connectivity, and event-related potentials suggest possible concussion effects. These patterns often appear even when symptoms aren't obvious.</p>
+                            <p class="alert-text">Significant changes in certain EEG biomarkers (like power spectrum or connectivity) can be associated with neurological disruption following impact. These are objective data points to consider alongside clinical assessment, especially as EEG changes may occur even without obvious symptoms.</p>
                         </div>
                         <div class="alert-section">
                             <h4 class="alert-section-title">
@@ -448,74 +536,162 @@
         <div class="container case-study-container">
             <div class="case-study-header">
                 <div class="case-study-subtitle animate-fadeInUp">SUCCESS STORY</div>
-                <h2 class="case-study-title animate-fadeInUp delay-1">Case Study: Chris's Journey with MindChat</h2>
-                <p class="case-study-description animate-fadeInUp delay-2">Follow Chris's experience using MindChat's EEG insights and questionnaire tools to proactively manage his mental health.</p>
+                <h2 class="case-study-title animate-fadeInUp delay-1">Case Study: John's Journey with MindChat</h2>
+                <p class="case-study-description animate-fadeInUp delay-2">Follow John's experience using MindChat's EEG insights and questionnaire tools to proactively manage his mental health.</p>
             </div>
             <div class="case-study-content">
                 <div class="case-study-profile animate-fadeInUp">
-                    <img src="images/chris.jpg" alt="Chris" class="case-study-avatar">
-                    <h3 class="case-study-name">Chris</h3>
+                    <img src="" alt="" class="case-study-avatar">
+                    <h3 class="case-study-name">John Doe</h3>
                     <p class="case-study-role">MindChat User</p>
                     <p class="case-study-quote">MindChat gave me objective insights about my mental health patterns that I couldn't see on my own. The AI guidance combined with EEG data helped me take action at the right times.</p>
                 </div>
                 <div class="case-study-journey animate-fadeInUp delay-2">
                     <div class="journey-week">
                         <h3 class="journey-week-title">Week 1: Getting Started</h3>
-                        <p class="journey-week-text">Chris started with an EEG scan and completed the PHQ-9 questionnaire, both indicating moderate depression. He consulted MindChat's AI avatar, which offered evidence-based suggestions, such as journaling and mindfulness techniques to begin addressing his symptoms.</p>
+                        <p class="journey-week-text">John began by completing the PHQ-9 assessment and an initial EEG scan. The platform highlighted questionnaire scores in the moderate range and EEG patterns sometimes associated with low mood, prompting him to explore resources. MindChat's AI Coach provided evidence-based initial suggestions like journaling and mindfulness exercises.</p>
                     </div>
                     <div class="journey-week">
                         <h3 class="journey-week-title">Week 2: Building Consistency</h3>
-                        <p class="journey-week-text">Chris continued monitoring and checking in with the AI avatar for additional advice. Based on scientific studies, the avatar recommended physical activity and a regular sleep routine, which Chris adopted to support his mental health improvement journey.</p>
+                        <p class="journey-week-text">JJohn used daily check-ins to track his mood and symptoms. He consulted the AI Coach, which, referencing its curated study library, suggested incorporating moderate physical activity and establishing a consistent sleep schedule – common strategies linked to improved well-being.</p>
                     </div>
                     <div class="journey-week">
                         <h3 class="journey-week-title">Weeks 3 & 4: Professional Support</h3>
-                        <p class="journey-week-text">With similar results continuing, Chris scheduled an appointment with a mental health professional. Alongside his therapy, he used MindChat's tools bi-weekly, sharing his data with his therapist for more tailored support and treatment planning.</p>
+                        <p class="journey-week-text">With similar results continuing, John scheduled an appointment with a mental health professional. Alongside his therapy, he used MindChat's tools bi-weekly, sharing his data with his therapist for more tailored support and treatment planning.</p>
                     </div>
                     <div class="journey-outcome">
                         <h3 class="journey-outcome-title">The Results</h3>
-                        <p class="journey-outcome-text">Over time, Chris saw measurable improvements in his EEG and questionnaire results. With MindChat's insights, guidance from the AI avatar, and professional support, he felt empowered to manage his mental health consistently and effectively. The objective data helped both Chris and his therapist track progress and adjust approaches as needed.</p>
+                        <p class="journey-outcome-text">Over several weeks, John observed positive trends in his self-reported symptoms and corresponding shifts in his EEG data patterns within the MindChat app. Combined with professional therapy, using MindChat's objective tracking and AI-driven insights helped John feel more informed and proactive in managing his mental wellness journey.</p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="research-section" id="research">
-        <div class="container research-container">
-            <div class="research-header">
-                <div class="research-subtitle animate-fadeInUp">SCIENTIFIC FOUNDATION</div>
-                <h2 class="research-title animate-fadeInUp delay-1">Research and Validation</h2>
-                <p class="research-description animate-fadeInUp delay-2">Transparency and scientific validation are central to MindChat. We rely on key studies to underpin our technology.</p>
-            </div>
-            <div class="research-content">
-                <div class="research-studies animate-fadeInUp">
-                    <div class="research-study">
-                        <h3 class="research-study-title">Alpha Asymmetry and Mood Disorders</h3>
-                        <p class="research-study-text">Research indicates that frontal alpha asymmetry is associated with anxiety and depression. MindChat's algorithms detect these patterns to provide valuable insights into potential mood disorders and emotional states.</p>
-                        <p class="research-study-source">Source: Coan, J. A., & Allen, J. J. B. (2004). Frontal EEG asymmetry as a moderator and mediator of emotion. Biological Psychology.</p>
-                    </div>
-                    <div class="research-study">
-                        <h3 class="research-study-title">EEG Markers for Stress Detection</h3>
-                        <p class="research-study-text">Studies have found that increased beta and gamma activity correlate with stress levels. MindChat uses these markers to alert you to potential stress, encouraging early intervention before stress accumulates into more serious conditions.</p>
-                        <p class="research-study-source">Source: Murata, A., & Iwase, H. (2000). Evaluation of mental fatigue using feature parameter extracted from event-related potential. International Journal of Industrial Ergonomics.</p>
-                    </div>
-                    <div class="research-study">
-                        <h3 class="research-study-title">Concussion Detection via EEG</h3>
-                        <p class="research-study-text">EEG can detect neurophysiological changes following concussions, even in individuals not showing clinical symptoms. MindChat's algorithms are designed to identify these subtle changes that might be missed by traditional assessment methods.</p>
-                        <p class="research-study-source">Source: Boshra, R., et al. (2019). From Group-Level Statistics to Single-Subject Prediction: Machine Learning Detection of Concussion in Retired Athletes. IEEE Transactions on Neural Systems and Rehabilitation Engineering.</p>
-                    </div>
-                </div>
-                <div class="research-references animate-fadeInUp delay-2">
-                    <h3 class="research-references-title">References</h3>
-                    <p class="research-reference">[1] Coan, J. A., & Allen, J. J. B. (2004). Frontal EEG asymmetry as a moderator and mediator of emotion. Biological Psychology, 67(1-2), 7-49.</p>
-                    <p class="research-reference">[2] Murata, A., & Iwase, H. (2000). Evaluation of mental fatigue using feature parameter extracted from event-related potential. International Journal of Industrial Ergonomics, 25(4), 313-320.</p>
-                    <p class="research-reference">[3] Krigolson, O. E., Williams, C. C., Norton, A., Hassall, C. D., & Colino, F. L. (2017). Choosing MUSE: Validation of a low-cost, portable EEG system for ERP research. Frontiers in Neuroscience, 11, 109.</p>
-                    <p class="research-reference">[4] Boshra, R., Ruiter, K. I., DeMatteo, C., Reilly, J. P., & Connolly, J. F. (2019). From Group-Level Statistics to Single-Subject Prediction: Machine Learning Detection of Concussion in Retired Athletes. IEEE Transactions on Neural Systems and Rehabilitation Engineering, 27(7), 1492-1501.</p>
-                    <p class="research-reference">[5] Thatcher, R. W., North, D. M., & Biver, C. J. (2005). EEG and intelligence: Relations between EEG coherence, EEG phase delay and power. Clinical Neurophysiology, 116(9), 2129-2141.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ▸▸ NEW :: Research & Scientific References ▸▸ -->
+    <section class="research-section" id="research">
+        <div class="container research-container">
+  
+        <div class="research-header">
+            <div class="research-subtitle">SCIENTIFIC FOUNDATION</div>
+            <h2 class="research-title">Research & Validation</h2>
+            <p class="research-description">
+          MindChat is built on peer-reviewed evidence across clinical psychology, EEG neuroscience
+          and digital therapeutics. Key references informing our approach are grouped below.
+            </p>
+        </div>
+  
+      <!-- ====================== CATEGORY 1 ====================== -->
+        <h3 class="research-category">1 · Validated Self-Report Scales for Anxiety, Depression & Stress</h3>
+        <ul class="reference-list">
+            <li>Shin C. et al. (2020) BMC Psychiatry. <a href="https://doi.org/10.1186/s12888-020-02613-0" target="_blank">doi</a></li>
+            <li>Costantini L. et al. (2020) J Affect Disord. <a href="https://doi.org/10.1016/j.jad.2020.09.131" target="_blank">doi</a></li>
+            <li>Chiu Y-H. et al. (2016) PeerJ. <a href="https://doi.org/10.7717/peerj.2790" target="_blank">doi</a></li>
+            <li>Lee E-H. (2012) Asian Nurs Res. <a href="https://doi.org/10.1016/j.anr.2012.08.004" target="_blank">doi</a></li>
+            <li>Wetherell J. & Gatz M. (2005) J Psychopathol Behav Assess. <a href="https://doi.org/10.1007/s10862-005-3261-3" target="_blank">doi</a></li>
+            <li>Williams L. S. et al. (2005) Stroke. <a href="https://doi.org/10.1161/01.STR.0000155688.18207.33" target="_blank">doi</a></li>
+            <li>Kroenke K. et al. (2001) J Gen Intern Med. <a href="https://doi.org/10.1046/j.1525-1497.2001.016009606.x" target="_blank">doi</a></li>
+            <li>Steer R. A. et al. (1993) J Anxiety Disord. <a href="https://doi.org/10.1016/0887-6185(93)90002-3" target="_blank">doi</a></li>
+            <li>Fydrich T. et al. (1992) J Anxiety Disord. <a href="https://doi.org/10.1016/0887-6185(92)90026-4" target="_blank">doi</a></li>
+            <li>Beck A. T. et al. (1988) J Consult Clin Psychol. <a href="https://doi.org/10.1037/0022-006X.56.6.893" target="_blank">doi</a></li>
+            <li>Cohen S. & Williamson G. (1988) In *The Social Psychology of Health*.</li>
+            <li>Cohen S. et al. (1983) J Health Soc Behav. <a href="https://doi.org/10.2307/2136404" target="_blank">doi</a></li>
+        </ul>
+  
+      <!-- ====================== CATEGORY 2 ====================== -->
+        <h3 class="research-category">2 · EEG Biomarkers, Alpha Asymmetry & ML Approaches</h3>
+        <ul class="reference-list">
+            <li>Riddle J. et al. (2021) Biol Psychol. <a href="https://doi.org/10.1016/j.biopsycho.2021.108061" target="_blank">doi</a></li>
+            <li>Seal A. et al. (2021) IEEE TIM 70. <a href="https://doi.org/10.1109/TIM.2021.3053999" target="_blank">doi</a></li>
+            <li>Vincent K. M. et al. (2021) Dev Psychobiol. <a href="https://doi.org/10.1002/dev.22163" target="_blank">doi</a></li>
+            <li>van der Vinne N. et al. (2017) NeuroImage Clin. <a href="https://doi.org/10.1016/j.nicl.2017.07.006" target="_blank">doi</a></li>
+            <li>Smith E. E. et al. (2017) Int J Psychophysiol. <a href="https://doi.org/10.1016/j.ijpsycho.2016.11.005" target="_blank">doi</a></li>
+            <li>Mennella R. et al. (2017) Behav Res Ther. <a href="https://doi.org/10.1016/j.brat.2017.02.002" target="_blank">doi</a></li>
+            <li>Gold C. et al. (2013) Scand J Psychol. <a href="https://doi.org/10.1111/sjop.12022" target="_blank">doi</a></li>
+            <li>Thibodeau R. et al. (2006) J Abnorm Psychol. <a href="https://doi.org/10.1037/0021-843X.115.4.715" target="_blank">doi</a></li>
+            <li>Allen J. J. B. et al. (2004) Psychophysiology. <a href="https://doi.org/10.1111/j.1469-8986.2003.00149.x" target="_blank">doi</a></li>
+        </ul>
+  
+      <!-- ====================== CATEGORY 3 — Wearable EEG (Muse) ====================== -->
+        <h3 class="research-category">3 · Wearable EEG (Muse) — Stress, Meditation & MCI</h3>
+        <ul class="reference-list">
+            <li>Sidelinger L. et al. (2023) Eur J Neurosci. <a href="https://doi.org/10.1111/ejn.16002" target="_blank">doi</a></li>
+            <li>Xu R. Y. et al. (2023) J Tech Behav Sci. <a href="https://doi.org/10.1007/s41347-022-00285-z" target="_blank">doi</a></li>
+            <li>Lazarou I. et al. (2023) Front Aging Neurosci. <a href="https://doi.org/10.3389/fnagi.2023.1167410" target="_blank">doi</a></li>
+            <li>Wu R. et al. (2023) Brain Sci 13. <a href="https://doi.org/10.3390/brainsci13081222" target="_blank">doi</a></li>
+            <li>Chai J. et al. (2023) Comput Biol Med 152. <a href="https://doi.org/10.1016/j.compbiomed.2022.106418" target="_blank">doi</a></li>
+            <li>Arsalan A. & Majid M. (2023) J Ambient Intell Hum Comput 12. <a href="https://doi.org/10.1007/s12652-021-03249-y" target="_blank">doi</a></li>
+            <li>Acabchuk R. L. et al. (2021) Mindfulness 12. <a href="https://doi.org/10.1007/s12671-020-01497-1" target="_blank">doi</a></li>
+            <li>Rutkowski T. M. et al. (2021) IEEE EMBC. <a href="https://doi.org/10.1109/EMBC46164.2021.9629480" target="_blank">doi</a></li>
+            <li>Krigolson O. E. et al. (2021) Front Neurosci 15. <a href="https://doi.org/10.3389/fnins.2021.634147" target="_blank">doi</a></li>
+            <li>Cannard C. et al. (2021) IEEE BIBM. <a href="https://doi.org/10.1109/BIBM52615.2021.9669778" target="_blank">doi</a></li>
+            <li>Krigolson O. E. et al. (2017) Front Neurosci 11. <a href="https://doi.org/10.3389/fnins.2017.00109" target="_blank">doi</a></li>
+            <li>Asif A. et al. (2019) Comput Biol Med 107. <a href="https://doi.org/10.1016/j.compbiomed.2019.02.015" target="_blank">doi</a></li>
+            <li>Hashemi A. et al. (2016) eNeuro 3. <a href="https://doi.org/10.1523/ENEURO.0275-16.2016" target="_blank">doi</a></li>
+        </ul>
+  
+        <!-- ====================== CATEGORY 4 ====================== -->
+        <h3 class="research-category">4 · Concussion, Mild TBI & Brain-Injury Biomarkers</h3>
+        <ul class="reference-list">
+            <li>Mortazavi M. et al. (2023) J Pediatr Rehabil Med. <a href="https://doi.org/10.3233/PRM-210114" target="_blank">doi</a></li>
+            <li>Edquilang D. & Feng J. (2022) Healthcare & Med Devices 51. <a href="https://doi.org/10.54941/ahfe1002125" target="_blank">doi</a></li>
+            <li>Schmid W. et al. (2021) J Neural Eng 18. <a href="https://doi.org/10.1088/1741-2552/ac1982" target="_blank">doi</a></li>
+            <li>Bennett T. & Feng J. (2021) In *Advances in HF-Ergonomics*. <a href="https://doi.org/10.1007/978-3-030-80744-3" target="_blank">doi</a></li>
+            <li>Hristopulos D. T. et al. (2019) Front Hum Neurosci 13. <a href="https://doi.org/10.3389/fnhum.2019.00419" target="_blank">doi</a></li>
+            <li>Conley A. C. et al. (2018) J Neurotrauma 35. <a href="https://doi.org/10.1089/neu.2018.5761" target="_blank">doi</a></li>
+            <li>Kontos A. P. et al. (2013) Am J Sports Med 41. <a href="https://doi.org/10.1177/0363546513488751" target="_blank">doi</a></li>
+        </ul>
+
+        <!-- ====================== CATEGORY 5 ====================== -->
+        <h3 class="research-category">5 · CBT & Digital / Adjunct Interventions</h3>
+        <ul class="reference-list">
+            <li>Levy H. C. et al. (2021) J Anxiety Disord 81. <a href="https://doi.org/10.1016/j.janxdis.2021.102407" target="_blank">doi</a></li>
+            <li>van Dis E. A. M. et al. (2020) JAMA Psychiatry 77. <a href="https://doi.org/10.1001/jamapsychiatry.2019.3986" target="_blank">doi</a></li>
+            <li>Etzelmueller A. et al. (2020) J Med Internet Res 22. <a href="https://doi.org/10.2196/18100" target="_blank">doi</a></li>
+            <li>Levin M. E. & Twohig M. P. (2017) Psychiatr Clin N Am 40. <a href="https://doi.org/10.1016/j.psc.2017.08.009" target="_blank">doi</a></li>
+            <li>Dobson K. S. (1989) J Consult Clin Psychol 57. <a href="https://doi.org/10.1037/0022-006X.57.3.414" target="_blank">doi</a></li>
+        </ul>
+
+        <!-- ====================== CATEGORY 6 ====================== -->
+        <h3 class="research-category">6 · Mindfulness, Exercise & Lifestyle</h3>
+        <ul class="reference-list">
+            <li>Arsalan A. et al. (2019) IEEE JBHI 23. <a href="https://doi.org/10.1109/JBHI.2019.2926407" target="_blank">doi</a></li>
+            <li>Jayakody K. et al. (2014) Br J Sports Med 48. <a href="https://doi.org/10.1136/bjsports-2012-091287" target="_blank">doi</a></li>
+            <li>Hoge E. A. et al. (2013) J Clin Psychiatry 74. <a href="https://doi.org/10.4088/JCP.12m08083" target="_blank">doi</a></li>
+            <li>Smith C. et al. (2007) Complement Ther Med 15. <a href="https://doi.org/10.1016/j.ctim.2006.05.001" target="_blank">doi</a></li>
+        </ul>
+
+        <!-- ====================== CATEGORY 7 ====================== -->
+        <h3 class="research-category">7 · Pharmacology, Psychedelics & Biology of Depression</h3>
+        <ul class="reference-list">
+            <li>van Elk M. & Fried E. I. (2023) Ther Adv Psychopharmacol 14. <a href="https://doi.org/10.1177/20451253231198466" target="_blank">doi</a></li>
+            <li>Moncrieff J. et al. (2022) Mol Psychiatry. <a href="https://doi.org/10.1038/s41380-022-01661-0" target="_blank">doi</a></li>
+            <li>Gaynes B. N. et al. (2019) Depress Anxiety 36. <a href="https://doi.org/10.1002/da.22968" target="_blank">doi</a></li>
+            <li>Carhart-Harris R. L. et al. (2018) Psychopharmacology 235. <a href="https://doi.org/10.1007/s00213-017-4771-x" target="_blank">doi</a></li>
+        </ul>
+
+        <!-- ====================== CATEGORY 8 ====================== -->
+        <h3 class="research-category">8 · Anxiety Disorders, Phobias & Social Anxiety</h3>
+        <ul class="reference-list">
+            <li>Olatunji B. O. (2019) *Cambridge Handbook of Anxiety Disorders*.</li>
+            <li>Moscovitch D. A. (2009) Cogn Behav Pract 16. <a href="https://doi.org/10.1016/j.cbpra.2008.04.002" target="_blank">doi</a></li>
+            <li>Clark D. M. et al. (2006) J Consult Clin Psychol 74. <a href="https://doi.org/10.1037/0022-006X.74.3.568" target="_blank">doi</a></li>
+        </ul>
+
+        <!-- ====================== CATEGORY 9 ====================== -->
+        <h3 class="research-category">9 · Diagnostic Guides, Epidemiology & Common Factors</h3>
+        <ul class="reference-list">
+            <li>Monroe S. M. & Harkness K. L. (2022) Annu Rev Clin Psychol 18. <a href="https://doi.org/10.1146/annurev-clinpsy-072220-021440" target="_blank">doi</a></li>
+            <li>Cohen Z. D. & DeRubeis R. J. (2018) Annu Rev Clin Psychol 14. <a href="https://doi.org/10.1146/annurev-clinpsy-050817-084746" target="_blank">doi</a></li>
+            <li>Baxter A. J. et al. (2014) Depress Anxiety 31. <a href="https://doi.org/10.1002/da.22230" target="_blank">doi</a></li>
+        </ul>
+
+        <p style="font-size:0.85em;color:gray;margin-top:25px;">
+            *This list represents key studies informing MindChat’s development and feature set. It is not exhaustive. MindChat itself is a non-diagnostic support tool and not a licensed medical device. Always consult a qualified professional for diagnosis and treatment.
+        </p>
+        </div>
+    </section>
+  
     <section class="faq-section" id="faq">
         <div class="container faq-container">
             <div class="faq-header">
@@ -554,7 +730,7 @@
                         </div>
                     </div>
                     <div class="accordion-content">
-                        <p>MindChat's concussion detection has shown approximately 87% accuracy in clinical studies when compared to medical diagnoses. However, it should be used as a screening tool only, and any suspected concussion should be evaluated by a healthcare professional regardless of MindChat's results.</p>
+                        <p>MindChat's concussion feature is based on emerging EEG research and offers timely monitoring to support awareness. While it provides useful insights, it is not a diagnostic tool and has not yet undergone formal clinical validation. All suspected concussions should be evaluated by a healthcare professional.</p>
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -565,7 +741,7 @@
                         </div>
                     </div>
                     <div class="accordion-content">
-                        <p>Regular use (e.g., once or twice daily for stress, once a week for anxiety, and once every 2 weeks for depression) helps track mental health patterns over time and provides more accurate insights. For concussion monitoring, we recommend baseline measurements when healthy, and then as recommended by your healthcare provider following any potential head injury.</p>
+                        <p>Regular use (e.g., once or twice daily for stress, once a week for anxiety, and once every 2 weeks for depression) helps track mental health patterns over time and provides more reliable trend detection over time. For concussion monitoring, we recommend baseline measurements when healthy, and then as recommended by your healthcare provider following any potential head injury.</p>
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -688,6 +864,8 @@
     </div>
     <div class="container footer-bottom">
         <p>© 2025 MindChat. All rights reserved.</p>
+        <p style="font-size:0.85em;color:#888;">MindChat provides monitoring and insights, not medical diagnoses. Always consult a qualified professional for mental-health concerns.</p>
+        <p style="font-size:0.85em;color:gray;">MindChat encrypts all data in transit and at rest. The platform is built to meet HIPAA safeguards and follows GDPR-style principles for user consent and data minimization.</p>
     </div>
 </footer>
 
