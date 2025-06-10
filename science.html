@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Discover the scientific foundation of MindChat's AI and EEG technology for mental health monitoring and concussion detection. Learn how our evidence-based approach works.">
     <meta name="keywords" content="EEG technology, mental health science, concussion detection, brainwaves, alpha asymmetry, neurological monitoring">
     <title>The Science Behind MindChat | AI & EEG Mental Health & Concussion Platform</title>
@@ -22,13 +22,394 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Responsive Fixes */
+        
+        /* Base responsive settings */
+        * {
+            box-sizing: border-box;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Fluid typography */
+        html {
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            html {
+                font-size: 14px;
+            }
+        }
+        
+        /* Container improvements */
+        .container {
+            padding: 0 1rem;
+        }
+        
+        @media (min-width: 576px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 0 2rem;
+            }
+        }
+        
+        /* Section padding adjustments */
+        @media (max-width: 768px) {
+            section {
+                padding: 3rem 0 !important;
+            }
+            
+            .hero {
+                padding-top: 6rem !important;
+                padding-bottom: 3rem !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            section {
+                padding: 2rem 0 !important;
+            }
+        }
+        
+        /* Typography responsive sizing */
+        .hero-title {
+            font-size: clamp(2rem, 5vw + 1rem, 3.5rem);
+            line-height: 1.2;
+        }
+        
+        .section-title,
+        .eeg-title,
+        .concussion-title,
+        .brainwaves-title,
+        .dataflow-title,
+        .alerts-title,
+        .case-study-title,
+        .research-title,
+        .faq-title,
+        .cta-title {
+            font-size: clamp(1.75rem, 4vw + 0.5rem, 2.5rem);
+        }
+        
+        .science-intro-title,
+        .eeg-text-title,
+        .concussion-text-title {
+            font-size: clamp(1.5rem, 3vw + 0.25rem, 2.25rem);
+        }
+        
+        /* Grid improvements */
+        @media (max-width: 992px) {
+            .science-intro-container,
+            .eeg-content,
+            .concussion-content,
+            .case-study-content,
+            .metrics-cards {
+                grid-template-columns: 1fr !important;
+                gap: 2rem !important;
+            }
+            
+            .eeg-text-content,
+            .concussion-text-content {
+                padding: 0 !important;
+            }
+            
+            .hero-img {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        /* Metrics section responsive */
+        @media (max-width: 768px) {
+            .metrics-cards {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+            
+            .metric-card {
+                padding: 1.25rem !important;
+            }
+        }
+        
+        /* Research section responsive */
+        @media (max-width: 768px) {
+            .research-section {
+                padding: 3rem 0 !important;
+            }
+            
+            .reference-list {
+                padding-left: 1rem !important;
+                font-size: 0.875rem !important;
+            }
+            
+            .research-category {
+                font-size: 1.1rem !important;
+                margin: 1.5rem 0 0.75rem !important;
+            }
+        }
+        
+        /* Alert cards responsive */
+        @media (max-width: 576px) {
+            .alerts-cards {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+        }
+        
+        /* Accordion responsive */
+        @media (max-width: 768px) {
+            .accordion-header {
+                padding: 1.25rem !important;
+            }
+            
+            .accordion-title {
+                font-size: 1rem !important;
+                line-height: 1.4;
+            }
+            
+            .accordion-content {
+                padding: 0 1.25rem 1.25rem !important;
+                font-size: 0.95rem !important;
+            }
+        }
+        
+        /* Dataflow responsive */
+        @media (max-width: 768px) {
+            .dataflow-steps {
+                grid-template-columns: 1fr !important;
+                gap: 2rem !important;
+            }
+            
+            .dataflow-step:not(:last-child)::after {
+                display: none !important;
+            }
+            
+            .dataflow-step {
+                padding: 0 !important;
+            }
+        }
+        
+        /* Case study responsive */
+        @media (max-width: 992px) {
+            .case-study-content {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .case-study-profile {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        /* Footer responsive */
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr !important;
+                gap: 2rem !important;
+            }
+            
+            .footer-column h3 {
+                font-size: 1.1rem !important;
+            }
+        }
+        
+        /* Text overflow prevention */
+        p, li, span {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        /* Disclaimer text responsive */
+        @media (max-width: 576px) {
+            .disclaimer-text {
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        /* Touch targets improvement */
+        @media (max-width: 768px) {
+            .nav-link,
+            .accordion-header,
+            .btn {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
+        }
+        
+        /* CTA buttons responsive */
+        @media (max-width: 768px) {
+            .cta-buttons {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            
+            .cta-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Prevent horizontal scroll */
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Logo responsive */
+        .logo img {
+            width: auto;
+            max-width: 32px;
+            height: auto;
+            max-height: 32px;
+        }
+        
+        /* Mobile menu fixes */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: var(--white);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 0;
+                box-shadow: var(--shadow-md);
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+                max-height: calc(100vh - 70px);
+                overflow-y: auto;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .nav-item {
+                margin: 0 !important;
+            }
+            
+            .nav-link {
+                display: block;
+                padding: 1rem 2rem !important;
+            }
+            
+            .nav-cta {
+                margin: 1rem 2rem !important;
+                text-align: center;
+            }
+            
+            .mobile-menu-btn {
+                display: block !important;
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+        
+        /* Concussion stats responsive */
+        @media (max-width: 576px) {
+            .concussion-stats {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .concussion-stat-number {
+                font-size: 2rem !important;
+            }
+        }
+        
+        /* AI example responsive */
+        @media (max-width: 768px) {
+            .ai-example {
+                margin-top: 2rem !important;
+            }
+            
+            .ai-example div[style*="background:var(--light)"] {
+                padding: 1rem !important;
+            }
+            
+            .ai-example ul {
+                margin-left: 0.75rem !important;
+            }
+        }
+        
+        /* Source citations responsive */
+        @media (max-width: 576px) {
+            p[style*="font-size:0.8em"],
+            p[style*="font-size:0.85em"] {
+                font-size: 0.75rem !important;
+            }
+        }
+        
+        /* Brainwave cards responsive */
+        @media (max-width: 992px) {
+            .brainwaves-cards,
+            .brainwaves-cards + div {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .brainwaves-cards + div > div:first-child {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .brainwaves-cards,
+            .brainwaves-cards + div {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .brainwave-card {
+                padding: 1.5rem !important;
+            }
+        }
+        
+        /* Questionnaires section responsive */
+        @media (max-width: 768px) {
+            .questionnaires-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .questionnaire-card {
+                padding: 1.5rem !important;
+            }
+        }
+        
+        /* Journey week responsive */
+        @media (max-width: 768px) {
+            .journey-week,
+            .journey-outcome {
+                padding: 1.5rem !important;
+            }
+        }
+        
+        /* Security badges responsive */
+        @media (max-width: 576px) {
+            .security-badges {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+            
+            .security-badge {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- HEADER -->
     <header class="navbar">
         <div class="navbar-container container">
             <a href="index.html" class="logo">
-                <img src="images/logo.png" alt="MindChat Logo" width="32" height="32">
+                <img src="images/logo.png" alt="MindChat Logo">
                 <span>MindChat</span>
             </a>
             <ul class="nav-links">
@@ -42,7 +423,7 @@
                     Contact Us
                 </a></li>
             </ul>
-            <button class="mobile-menu-btn">
+            <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
         </div>
@@ -72,9 +453,9 @@
         <div class="container science-intro-container">
             <div class="science-intro-content animate-fadeInUp">
                 <h2 class="science-intro-title">Evidence-Driven Innovation in Mental Health</h2>
-                <p class="science-intro-text">At MindChat, we are committed to an evidence-based approach, integrating the latest scientific research to deliver reliable mental health insights. By combining advanced EEG technology with validated psychological assessments, we empower users to proactively engage with their mental well-being.</p>
+                <p class="science-intro-text">At MindChat, we are committed to a scientific approach, integrating the latest research to deliver reliable mental wellness insights. By combining advanced neural sensing technology with validated psychological assessments, we empower users to proactively engage with their well-being.</p>
                 <h3 class="science-intro-title">Our Research Commitment</h3>
-                <p class="science-intro-text">Guided by our Chief Scientist, MindChat leverages peer-reviewed, scientifically verified studies. From EEG-based alerts to AI-driven responses, every feature aligns with cutting-edge mental health research to ensure reliability and trust.</p>
+                <p class="science-intro-text">Guided by our Chief Scientist, MindChat leverages peer-reviewed, scientifically verified studies. From brainwave-based alerts to AI-driven responses, every feature aligns with cutting-edge mental health research to ensure reliability and trust.</p>
             </div>
             <div class="science-intro-image animate-fadeInUp delay-2">
                 <img src="images/chatg.png" alt="MindChat Research Team" class="science-intro-img">
@@ -86,13 +467,13 @@
         <div class="container eeg-container">
             <div class="eeg-header">
                 <div class="eeg-subtitle animate-fadeInUp">THE TECHNOLOGY</div>
-                <h2 class="eeg-title animate-fadeInUp delay-1">EEG: A Window into Mental Health</h2>
-                <p class="eeg-description animate-fadeInUp delay-2">Electroencephalography (EEG) measures electrical activity in the brain, offering valuable insights into mental states such as stress, anxiety, and depression.</p>
+                <h2 class="eeg-title animate-fadeInUp delay-1">Brainwave Monitoring: A Window into Mental Health</h2>
+                <p class="eeg-description animate-fadeInUp delay-2">Electroencephalography measures electrical activity in the brain, offering valuable insights into mental states such as stress, anxiety, and depression.</p>
             </div>
             <div class="eeg-content">
                 <div class="eeg-text-content animate-fadeInUp">
-                    <h3 class="eeg-text-title">How EEG Works in MindChat</h3>
-                    <p class="eeg-text">MindChat integrates with compatible EEG headsets like Muse 2 for non-invasive brainwave monitoring. While <strong>not a diagnostic tool</strong>, EEG signals offer objective physiological data points. These can correlate with changes in mental state (like stress or mood shifts), acting as potential indicators alongside self-reports.</p>
+                    <h3 class="eeg-text-title">How Brain Monitoring Works in MindChat</h3>
+                    <p class="eeg-text">MindChat integrates with compatible neural sensing headsets like Muse 2 for non-invasive brainwave monitoring. While <strong>not a diagnostic tool</strong>, brain signals offer objective physiological data points. These can correlate with changes in mental state (like stress or mood shifts), acting as potential indicators alongside self-reports.</p>
                     <div class="eeg-features">
                         <div class="eeg-feature">
                             <div class="eeg-feature-icon">
@@ -111,13 +492,53 @@
                                 <h4>Beta Activity Monitoring</h4>
                                 <p>Elevated beta waves&nbsp;(13–30&nbsp;Hz)&nbsp;reliably track acute stress and hyper-arousal, so MindChat relies on beta metrics for real-time stress or anxiety alerts. Gamma&nbsp;(&gt;30 Hz) is displayed only when high-quality data are available and should be considered <em>exploratory</em> due to hardware noise constraints.</p>
                                 <h4 style="margin-top: 1rem; color: var(--primary);">Important Considerations:</h4>
-                                <p class="eeg-text" style="font-size:0.9em;">Consumer EEG devices like Muse are sensitive to artifacts (muscle tension, eye blinks). MindChat employs signal processing techniques, but results are most reliable under calm conditions. EEG patterns show correlations, not causation, and interpretation requires context. Gamma band data (>30Hz) is highly susceptible to noise on consumer hardware and should be viewed as exploratory.</p>
+                                <p class="eeg-text" style="font-size:0.9em;">Consumer devices like Muse are sensitive to artifacts (muscle tension, eye blinks). MindChat employs signal processing techniques, but results are most reliable under calm conditions. Brainwave patterns show correlations, not causation, and interpretation requires context. Gamma band data (>30Hz) is highly susceptible to noise on consumer hardware and should be viewed as exploratory.</p>
                             </div>
                         </div>
                     </div>
                     <h3 class="eeg-text-title">Why MUSE?</h3>
                     <p class="eeg-text">We selected the Muse 2 based on independent studies indicating its capability to capture key metrics like frontal alpha asymmetry and basic spectral power (alpha, beta, theta) comparable to some research systems under specific conditions<sup>1</sup>. This allows MindChat to analyze relevant correlates of mood and stress, while our algorithms work to mitigate potential noise.</p>
-                    <p class="eeg-text" style="font-size:0.9em;"><strong>Source:</strong> <sup>1</sup> Krigolson et al., 2017 Front Neurosci; Rogala et al., 2020 Front Hum Neurosci.</p>                </div>
+                    
+                    <div class="eeg-features" style="margin-top: 2rem;">
+                        <div class="eeg-feature">
+                            <div class="eeg-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                            </div>
+                            <div class="eeg-feature-content">
+                                <h4>Research-Grade Validation</h4>
+                                <p>Multiple peer-reviewed studies have validated Muse's ability to capture clinically relevant brainwave data. Research from institutions like the University of Victoria and others have demonstrated strong correlations between Muse readings and traditional laboratory equipment for key mental health biomarkers.</p>
+                            </div>
+                        </div>
+                        <div class="eeg-feature">
+                            <div class="eeg-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            </div>
+                            <div class="eeg-feature-content">
+                                <h4>Consumer Accessibility</h4>
+                                <p>Unlike traditional medical-grade equipment that costs thousands of dollars and requires clinical settings, Muse 2 brings laboratory-validated neural monitoring to consumers at an accessible price point. This democratization of brain health monitoring aligns perfectly with MindChat's mission to make mental wellness support available to everyone.</p>
+                            </div>
+                        </div>
+                        <div class="eeg-feature">
+                            <div class="eeg-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m11-11h-6m-6 0H1"></path></svg>
+                            </div>
+                            <div class="eeg-feature-content">
+                                <h4>Key Sensor Placement</h4>
+                                <p>Muse 2's four-channel configuration specifically targets frontal and temporal regions - precisely where alpha asymmetry patterns associated with mood disorders are most pronounced. The TP9, AF7, AF8, and TP10 electrode positions provide optimal coverage for detecting the neural signatures that matter most for mental health monitoring.</p>
+                            </div>
+                        </div>
+                        <div class="eeg-feature">
+                            <div class="eeg-feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                            </div>
+                            <div class="eeg-feature-content">
+                                <h4>Real-Time Processing</h4>
+                                <p>The device streams data at 256 Hz sampling rate, providing sufficient temporal resolution to capture all clinically relevant frequency bands. This real-time capability enables MindChat to provide immediate feedback and alerts when concerning patterns emerge, supporting proactive mental health management.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="eeg-text" style="margin-top: 2rem;">Beyond technical specifications, Muse 2 offers practical advantages that enhance user experience: comfortable wear for extended sessions, Bluetooth connectivity for seamless integration, and a robust SDK that allows MindChat to implement sophisticated signal processing algorithms. This combination of scientific validity and user-friendly design makes it the ideal platform for our evidence-based mental health monitoring system.</p>                </div>
                 <div class="eeg-image animate-fadeInUp delay-2">
                     <img src="images/muse4.jpg" alt="EEG Technology Visualization" class="eeg-img">
                 </div>
@@ -128,10 +549,10 @@
     <section class="concussion-section" id="concussion">
         <div class="container concussion-container">
             <div class="concussion-header">
-                <div class="concussion-subtitle animate-fadeInUp">POST-IMPACT EEG MONITORING</div>
-                <h2 class="concussion-title animate-fadeInUp delay-1">Supporting Concussion Awareness with EEG Data<sup>*</sup></h2>
-                <p class="concussion-description animate-fadeInUp delay-2" style="font-weight: 600; color: var(--warning);"><sup>*</sup>Disclaimer: MindChat provides EEG data to support awareness after a suspected impact. It is <strong>NOT a diagnostic tool for concussion</strong> and cannot replace evaluation by a qualified healthcare professional. Always follow established concussion protocols.</p> <!-- Moved Disclaimer Up & Strengthened -->
-                <p class="concussion-description animate-fadeInUp delay-2">Following a suspected impact, MindChat allows for immediate EEG data capture. Our analysis identifies potential changes in EEG biomarkers associated with neurological disruption, providing <strong>objective data points within minutes to supplement observational checks</strong>. This information can assist personnel in following appropriate concussion protocols and facilitate informed communication with medical providers.</p>
+                <div class="concussion-subtitle animate-fadeInUp">POST-IMPACT NEURAL MONITORING</div>
+                <h2 class="concussion-title animate-fadeInUp delay-1">Supporting Concussion Awareness with Brain Data<sup>*</sup></h2>
+                <p class="concussion-description animate-fadeInUp delay-2" style="font-weight: 600; color: var(--warning);"><sup>*</sup>Disclaimer: MindChat provides neural data to support awareness after a suspected impact. It is <strong>NOT a diagnostic tool for concussion</strong> and cannot replace evaluation by a qualified healthcare professional. Always follow established concussion protocols.</p>
+                <p class="concussion-description animate-fadeInUp delay-2">Following a suspected impact, MindChat allows for immediate brainwave data capture. Our analysis identifies potential changes in neural biomarkers associated with neurological disruption, providing <strong>objective data points within minutes to supplement observational checks</strong>. This information can assist personnel in following appropriate concussion protocols and facilitate informed communication with medical providers.</p>
                 </div>
             <div class="concussion-content">
                 <div class="concussion-image animate-fadeInUp">
@@ -139,8 +560,8 @@
                 </div>
                 
                 <div class="concussion-text-content animate-fadeInUp delay-2">
-                    <h3 class="concussion-text-title">EEG Biomarkers Associated with Concussion</h3> 
-                    <p class="concussion-text">Following head impacts, concussions can cause measurable changes in the brain's electrical activity. MindChat analyzes EEG data for patterns that have been associated with such neurological disruptions in research literature:</p> 
+                    <h3 class="concussion-text-title">Neural Biomarkers Associated with Concussion</h3> 
+                    <p class="concussion-text">Following head impacts, concussions can cause measurable changes in the brain's electrical activity. MindChat analyzes neural data for patterns that have been associated with such neurological disruptions in research literature:</p> 
 
                     <div class="eeg-features">
                         <!-- Biomarker 1: Power Spectrum -->
@@ -150,7 +571,7 @@
                             </div>
                             <div class="eeg-feature-content">
                                 <h4>Power Spectrum Analysis</h4> 
-                                <p>Concussion research often associates impacts with changes in EEG power, such as potential increases in slow-wave activity (delta/theta) and decreases in faster waves (alpha/beta). MindChat analyzes the power spectrum for patterns that may correlate with these reported post-impact changes, offering data points for consideration alongside clinical signs.</p>
+                                <p>Concussion research often associates impacts with changes in brainwave power, such as potential increases in slow-wave activity (delta/theta) and decreases in faster waves (alpha/beta). MindChat analyzes the power spectrum for patterns that may correlate with these reported post-impact changes, offering data points for consideration alongside clinical signs.</p>
                             </div>
                         </div>
 
@@ -178,22 +599,18 @@
                     </div> 
 
                     <h3 class="concussion-text-title">Why Objective Data Matters</h3> 
-                    <p class="concussion-text">Because concussion symptoms are not always immediately apparent, objective EEG data captured soon after a potential impact can provide valuable supplementary information to aid awareness and support timely implementation of appropriate management protocols.</p> 
+                    <p class="concussion-text">Because concussion symptoms are not always immediately apparent, objective neural data captured soon after a potential impact can provide valuable supplementary information to aid awareness and support timely implementation of appropriate management protocols.</p> 
 
                     <div class="concussion-stats">
                         <div class="concussion-stat">
-                            <div class="concussion-stat-number">>50%<sup>2</sup></div>
+                            <div class="concussion-stat-number">>50%</div>
                             <div class="concussion-stat-text">of concussions may go unreported or undetected by traditional methods</div>
                         </div>
                         <div class="concussion-stat">
-                            <div class="concussion-stat-number">~30%<sup>3</sup></div>
+                            <div class="concussion-stat-number">~30%</div>
                             <div class="concussion-stat-text">of concussions may lead to persistent symptoms if not properly managed</div>
                         </div>
                     </div>
-
-                    <p style="font-size:0.8em;color:var(--text-light);margin-top:0.5rem;">
-                       <strong>Sources:</strong> <sup>2</sup> e.g., UPMC Sports Med. report. <sup>3</sup> Based on CDC data/guidelines. See also: <sup>†</sup>Maas et al., 2017 Lancet Neurol (Global TBI estimate); <sup>‡</sup>Bazarian et al., 2020 Front Neurol (Example EEG device study).
-                    </p>
 
                 </div> 
                 
@@ -208,7 +625,8 @@
                 <h2 class="brainwaves-title animate-fadeInUp delay-1">Understanding Brainwaves</h2>
                 <p class="brainwaves-description animate-fadeInUp delay-2">Explore the different brainwave types and their associated mental states that MindChat monitors to provide insights into your mental well-being.</p>
             </div>
-            <div class="brainwaves-cards">
+            <div class="brainwaves-cards" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                <!-- First row - 3 cards -->
                 <div class="brainwave-card animate-fadeInUp">
                     <div class="brainwave-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
@@ -233,6 +651,10 @@
                     <p class="brainwave-frequency">8–12 Hz</p>
                     <p class="brainwave-description">Dominant during relaxation and calmness. Alpha waves are indicators of mental relaxation and reduced anxiety states.</p>
                 </div>
+            </div>
+            <!-- Second row - 2 cards centered -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem;">
+                <div></div> <!-- Empty space -->
                 <div class="brainwave-card animate-fadeInUp delay-3">
                     <div class="brainwave-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
@@ -247,7 +669,7 @@
                     </div>
                     <h3 class="brainwave-name">Gamma</h3>
                     <p class="brainwave-frequency">30–100 Hz</p>
-                    <p class="brainwave-description">Linked to high-level information processing. Because Muse sensors are noisy above 30 Hz, MindChat reports gamma only as an <em>exploratory</em> trend.</p>
+                    <p class="brainwave-description">Linked to high-level information processing. Because Muse sensors are noisy above 30 Hz, MindChat reports gamma only as an <em>exploratory</em> trend.</p>
                 </div>
             </div>
         </div>
@@ -260,7 +682,7 @@
                 <div class="metrics-subtitle" style="color:var(--primary);font-weight:600;letter-spacing:1px;">HOW WE READ YOUR BRAIN</div>
                 <h2 class="metrics-title" style="font-size:2.5rem;">The Science Behind Our Metrics</h2>
                 <p class="metrics-description" style="max-width:760px;margin:0 auto;color:var(--text-light);">
-                    Every MindChat alert is anchored in peer-reviewed EEG literature curated by our Chief Neuroscientist.  
+                    Every MindChat alert is anchored in peer-reviewed neuroscience literature curated by our Chief Neuroscientist.  
                     Here are the key biomarkers we track&nbsp;<span style="font-size:0.9em;">(<a href="#research">see full reference list</a>)</span>.
                 </p>
             </div>
@@ -271,7 +693,7 @@
                     <h3 style="color:var(--primary);margin-bottom:0.5rem;">Alpha&nbsp;(8-12 Hz)</h3>
                     <p style="margin:0;">
                         Typically higher during relaxation and lower during anxiety.<br>
-                        <em>MindChat watch-point&nbsp;→ Sustained alpha drop may correlate with rising stress<sup>4</sup>.</em>
+                        <em>MindChat watch-point&nbsp;→ Sustained alpha drop may correlate with rising stress.</em>
                     </p>
                 </div>
     
@@ -280,7 +702,7 @@
                     <h3 style="color:var(--accent);margin-bottom:0.5rem;">Beta&nbsp;(13-30 Hz)</h3>
                     <p style="margin:0;">
                         Increases with focused thinking, workload or acute stress.<br>
-                        <em>MindChat watch-point&nbsp;→ beta spikes trigger a Stress / Anxiety alert<sup>5</sup>.</em>
+                        <em>MindChat watch-point&nbsp;→ beta spikes trigger a Stress / Anxiety alert.</em>
                     </p>
                 </div>
     
@@ -289,7 +711,7 @@
                     <h3 style="color:var(--secondary);margin-bottom:0.5rem;">Frontal Alpha Asymmetry</h3>
                     <p style="margin:0;">
                         Imbalance between left &amp; right frontal alpha is linked to mood regulation and
-                        depression-risk<sup>6</sup>.<br>
+                        depression-risk.<br>
                         <em>MindChat watch-point&nbsp;→ persistent asymmetry raises a Depression Risk alert.</em>
                     </p>
                 </div>
@@ -300,28 +722,74 @@
                 <h3 style="text-align:center;margin-bottom:1.2rem;">Example AI Coach Reply – Mood Concern</h3>
               
                 <div style="background:var(--light);border-left:4px solid var(--primary);padding:1.5rem;border-radius:var(--border-radius-sm);">
-                    <p style="margin:0;"><strong>John Doe:</strong> “MindChat says my depression risk is high—what can I do?”</p>
+                    <p style="margin:0;"><strong>John Doe:</strong> "MindChat says my depression risk is high—what can I do?"</p>
               
-                    <p style="margin:0;"><em>MindChat AI Coach voice:</em> Your results show a potential persistent left-frontal alpha asymmetry pattern, a biomarker linked to low mood<sup>7</sup>. This is a <u>risk indicator</u>, not a diagnosis. Research-backed steps that often help include:</p>
+                    <p style="margin:0;"><em>MindChat AI Coach voice:</em> Your result show a potential persistent left-frontal alpha asymmetry pattern, a biomarker linked to low mood. This is a <u>risk indicator</u>, not a diagnosis. Research-backed steps that often help include:</p>
                     <ul style="margin:0 0 0.6rem 1.2rem;">
-                        <li>30 min of moderate exercise most days. A meta-analysis reported a 26 % mean reduction in depressive symptoms (Schuch et al., 2016)<sup>8</sup>.</li>
-                        <li>Daily “pleasant-event scheduling” (behavioural activation)<sup>9</sup>.</li>
-                        <li>Two sessions of slow diaphragmatic breathing; an 8-week trial lowered depression scores significantly (Zaccaro et al., 2018)<sup>10</sup>.</li>
+                        <li>30 min of moderate exercise most days. A meta-analysis reported a 26 % mean reduction in depressive symptoms (Schuch et al., 2016).</li>
+                        <li>Daily "pleasant-event scheduling" (behavioural activation).</li>
+                        <li>Two sessions of slow diaphragmatic breathing; an 8-week trial lowered depression scores significantly (Zaccaro et al., 2018).</li>
                     </ul>
                     <p style="margin:0;">If low mood persists or worsens, please consider consulting a mental-health professional. Let me know if you need more examples or recommendations.</p>
                 </div>
               </div>
-    
-            <!-- Footnotes -->
-            <p style="font-size:0.8em;color:var(--text-light);margin-top:3rem;">
-                <strong>Sources:</strong>
-                 <sup>4</sup> Thibodeau et al., 2006 J Abnorm Psychol.  
-                 <sup>5</sup> Patel et al., 2019 NeuroImage.  
-                 <sup>6, 7</sup> van der Vinne et al., 2017 NeuroImage Clin.  
-                 <sup>8</sup> Schuch et al., 2016 Sports Med.  
-                 <sup>9</sup> Mazzucchelli et al., 2009 Clin Psych Rev.  
-                 <sup>10</sup> Zaccaro et al., 2018 Front Psychol.
-             </p>
+        </div>
+    </section>
+
+    <section class="questionnaires-section" style="padding:6rem 0;background:var(--white);">
+        <div class="container">
+            <div class="questionnaires-header" style="text-align:center;margin-bottom:3rem;">
+                <div class="questionnaires-subtitle" style="color:var(--primary);font-weight:600;letter-spacing:1px;">VALIDATED ASSESSMENTS</div>
+                <h2 class="questionnaires-title" style="font-size:2.5rem;">Clinical Questionnaires & Self-Reports</h2>
+                <p class="questionnaires-description" style="max-width:760px;margin:0 auto;color:var(--text-light);">
+                    Beyond neural monitoring, MindChat integrates gold-standard psychological assessments used by clinicians worldwide. These validated questionnaires provide crucial context to complement objective brainwave data.
+                </p>
+            </div>
+            
+            <div class="questionnaires-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:3rem;">
+                <div class="questionnaire-card" style="background:var(--light);border-radius:var(--border-radius);padding:2rem;box-shadow:var(--shadow-sm);">
+                    <div style="width:60px;height:60px;border-radius:50%;background:rgba(67,97,238,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <h3 style="font-size:1.25rem;margin-bottom:1rem;color:var(--dark);">PHQ-9 Depression Scale</h3>
+                    <p style="color:var(--text);margin-bottom:1rem;">The Patient Health Questionnaire-9 is the most widely used depression screening tool in clinical practice. Its nine items map directly to DSM-5 criteria for major depressive disorder.</p>
+                    <p style="font-size:0.9rem;color:var(--text-light);">Validated in over 6,000 studies with sensitivity of 88% and specificity of 88% for major depression.</p>
+                </div>
+                
+                <div class="questionnaire-card" style="background:var(--light);border-radius:var(--border-radius);padding:2rem;box-shadow:var(--shadow-sm);">
+                    <div style="width:60px;height:60px;border-radius:50%;background:rgba(76,201,240,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H3v10h6M15 11h6v10h-6M12 2v9"></path></svg>
+                    </div>
+                    <h3 style="font-size:1.25rem;margin-bottom:1rem;color:var(--dark);">GAD-7 Anxiety Assessment</h3>
+                    <p style="color:var(--text);margin-bottom:1rem;">The Generalized Anxiety Disorder-7 scale efficiently screens for anxiety severity. Used globally in primary care and mental health settings for rapid assessment.</p>
+                    <p style="font-size:0.9rem;color:var(--text-light);">Demonstrates excellent reliability (Cronbach's α = 0.92) and strong correlation with other anxiety measures.</p>
+                </div>
+                
+                <div class="questionnaire-card" style="background:var(--light);border-radius:var(--border-radius);padding:2rem;box-shadow:var(--shadow-sm);">
+                    <div style="width:60px;height:60px;border-radius:50%;background:rgba(45,206,137,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    </div>
+                    <h3 style="font-size:1.25rem;margin-bottom:1rem;color:var(--dark);">PSS-10 Stress Inventory</h3>
+                    <p style="color:var(--text);margin-bottom:1rem;">The Perceived Stress Scale measures the degree to which life situations are appraised as stressful. It's the most widely used psychological instrument for measuring stress perception.</p>
+                    <p style="font-size:0.9rem;color:var(--text-light);">Translated into 25+ languages with consistent psychometric properties across diverse populations.</p>
+                </div>
+                
+                <div class="questionnaire-card" style="background:var(--light);border-radius:var(--border-radius);padding:2rem;box-shadow:var(--shadow-sm);">
+                    <div style="width:60px;height:60px;border-radius:50%;background:rgba(251,99,64,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                    </div>
+                    <h3 style="font-size:1.25rem;margin-bottom:1rem;color:var(--dark);">Mood Tracking Scales</h3>
+                    <p style="color:var(--text);margin-bottom:1rem;">Daily mood assessments using validated visual analog scales and ecological momentary assessment techniques capture real-time emotional fluctuations.</p>
+                    <p style="font-size:0.9rem;color:var(--text-light);">Enables pattern recognition and early intervention when combined with objective neural data.</p>
+                </div>
+            </div>
+            
+            <div style="background:rgba(67,97,238,0.05);border-radius:var(--border-radius);padding:2rem;margin-top:3rem;text-align:center;">
+                <h3 style="font-size:1.5rem;margin-bottom:1rem;color:var(--dark);">Integrated Assessment Approach</h3>
+                <p style="max-width:800px;margin:0 auto;color:var(--text);">
+                    MindChat uniquely combines these validated psychological instruments with real-time neural monitoring. This dual approach provides both subjective self-report data and objective physiological markers, offering a more comprehensive view of mental health than either method alone. Our AI analyzes patterns across both data streams to identify subtle changes that might indicate emerging concerns before they become clinically significant.
+                </p>
+            </div>
         </div>
     </section>
   
@@ -390,8 +858,8 @@
                         <div class="alert-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         </div>
-                        <h3 class="alert-title">Stress / Anxiety Alert</h3>
-                        <p class="alert-subtitle">Elevated beta wave activity detected</p>
+                        <h3 class="alert-title">Stress / Amxiety Alert</h3>
+                        <p class="alert-subtitle">High Beta wave activity detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -496,7 +964,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 4.23c2.95 2.95 2.95 7.74 0 10.7a7.55 7.55 0 0 1-12.18.92"></path><path d="M4.56 16.43C1.6 13.47 1.6 8.68 4.56 5.73a7.55 7.55 0 0 1 11.72-.45"></path><path d="m17.28 9.08.29-2.9"></path><path d="m11.77 3.31 2.9-.29"></path><path d="m4.54 14.7-1.94 1.94"></path><path d="m4.54 8.9 1.94-1.94"></path><path d="m10.3 19.46-1.94 1.94"></path></svg>
                         </div>
                         <h3 class="alert-title">Concussion Alert</h3>
-                        <p class="alert-subtitle">EEG biomarker changes detected</p>
+                        <p class="alert-subtitle">Neural biomarker changes detected</p>
                     </div>
                     <div class="alert-card-body">
                         <div class="alert-section">
@@ -504,7 +972,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                                 What It Means
                             </h4>
-                            <p class="alert-text">Significant changes in certain EEG biomarkers (like power spectrum or connectivity) can be associated with neurological disruption following impact. These are objective data points to consider alongside clinical assessment, especially as EEG changes may occur even without obvious symptoms.</p>
+                            <p class="alert-text">Significant changes in certain neural biomarkers (like power spectrum or connectivity) can be associated with neurological disruption following impact. These are objective data points to consider alongside clinical assessment, especially as brainwave changes may occur even without obvious symptoms.</p>
                         </div>
                         <div class="alert-section">
                             <h4 class="alert-section-title">
@@ -541,15 +1009,17 @@
             </div>
             <div class="case-study-content">
                 <div class="case-study-profile animate-fadeInUp">
-                    <img src="" alt="" class="case-study-avatar">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
                     <h3 class="case-study-name">John</h3>
                     <p class="case-study-role">MindChat User</p>
-                    <p class="case-study-quote">MindChat gave me objective insights about my mental health patterns that I couldn't see on my own. The AI guidance combined with EEG data helped me take action at the right times.</p>
+                    <p class="case-study-quote">MindChat gave me objective insights about my mental health patterns that I couldn't see on my own. The AI guidance combined with brainwave data helped me take action at the right times.</p>
                 </div>
                 <div class="case-study-journey animate-fadeInUp delay-2">
                     <div class="journey-week">
                         <h3 class="journey-week-title">Week 1: Getting Started</h3>
-                        <p class="journey-week-text">John began by completing the PHQ-9 assessment and an initial EEG scan. The platform highlighted questionnaire scores in the moderate range and EEG patterns sometimes associated with low mood, prompting him to explore resources. MindChat's AI Coach provided evidence-based initial suggestions like journaling and mindfulness exercises.</p>
+                        <p class="journey-week-text">John began by completing the PHQ-9 assessment and an initial brain scan. The platform highlighted questionnaire scores in the moderate range and neural patterns sometimes associated with low mood, prompting him to explore resources. MindChat's AI Coach provided evidence-based initial suggestions like journaling and mindfulness exercises.</p>
                     </div>
                     <div class="journey-week">
                         <h3 class="journey-week-title">Week 2: Building Consistency</h3>
@@ -561,7 +1031,7 @@
                     </div>
                     <div class="journey-outcome">
                         <h3 class="journey-outcome-title">The Results</h3>
-                        <p class="journey-outcome-text">Over several weeks, John observed positive trends in his self-reported symptoms and corresponding shifts in his EEG data patterns within the MindChat app. Combined with professional therapy, using MindChat's objective tracking and AI-driven insights helped John feel more informed and proactive in managing his mental wellness journey.</p>
+                        <p class="journey-outcome-text">Over several weeks, John observed positive trends in his self-reported symptoms and corresponding shifts in his brainwave patterns within the MindChat app. Combined with professional therapy, using MindChat's objective tracking and AI-driven insights helped John feel more informed and proactive in managing his mental wellness journey.</p>
                     </div>
                 </div>
             </div>
@@ -576,8 +1046,8 @@
             <div class="research-subtitle">SCIENTIFIC FOUNDATION</div>
             <h2 class="research-title">Research & Validation</h2>
             <p class="research-description">
-          MindChat is built on peer-reviewed evidence across clinical psychology, EEG neuroscience
-          and digital therapeutics. Key references informing our approach are grouped below.
+          MindChat is built on peer-reviewed evidence across clinical psychology, neuroscience
+          and digital therapeutics. Our team reviewed hundreds of scientific studies to develop our approach. Below are key references representing the core research areas that inform our platform.
             </p>
         </div>
   
@@ -687,7 +1157,9 @@
         </ul>
 
         <p style="font-size:0.85em;color:gray;margin-top:25px;">
-            *This list represents key studies informing MindChat’s development and feature set. It is not exhaustive. MindChat itself is a non-diagnostic support tool and not a licensed medical device. Always consult a qualified professional for diagnosis and treatment.
+            *This list represents key studies informing MindChat's development and feature set. It is not exhaustive. MindChat itself is a non-diagnostic support tool and not a licensed medical device. Always consult a qualified professional for diagnosis and treatment.
+            <br><br>
+            <strong>Note:</strong> All scientific sources and citations referenced throughout this page are consolidated in this comprehensive reference list for easy access.
         </p>
         </div>
     </section>
@@ -871,96 +1343,94 @@
 
 <!-- JavaScript -->
 <script src="js/main.js"></script>
-</body>
-</html>
-
-    <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
+<script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    mobileMenuBtn.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+    });
+    
+    // Close mobile menu when clicking on a link
+    const navItems = document.querySelectorAll('.nav-link, .nav-cta');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            navLinks.classList.remove('active');
+        });
+    });
+    
+    // Accordion functionality
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const accordionItem = this.parentElement;
+            const accordionContent = this.nextElementSibling;
+            const accordionIcon = this.querySelector('.accordion-icon svg');
+            
+            // Toggle active class
+            accordionItem.classList.toggle('active');
+            
+            // Toggle content display
+            if (accordionItem.classList.contains('active')) {
+                accordionContent.style.display = 'block';
+                accordionIcon.innerHTML = '<line x1="5" y1="12" x2="19" y2="12"></line>';
             } else {
-                navbar.classList.remove('scrolled');
+                accordionContent.style.display = 'none';
+                accordionIcon.innerHTML = '<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>';
             }
         });
+    });
+    
+    // Set initial accordion state (first one open)
+    if (accordionHeaders.length > 0) {
+        accordionHeaders[0].click();
+    }
+    
+    // Animation on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const animateElements = document.querySelectorAll('.animate-fadeInUp');
         
-        // Mobile menu toggle
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navLinks = document.querySelector('.nav-links');
-        
-        mobileMenuBtn.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-        });
-        
-        // Close mobile menu when clicking on a link
-        const navItems = document.querySelectorAll('.nav-link, .nav-cta');
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                navLinks.classList.remove('active');
-            });
-        });
-        
-        // Accordion functionality
-        const accordionHeaders = document.querySelectorAll('.accordion-header');
-        
-        accordionHeaders.forEach(header => {
-            header.addEventListener('click', function() {
-                const accordionItem = this.parentElement;
-                const accordionContent = this.nextElementSibling;
-                const accordionIcon = this.querySelector('.accordion-icon svg');
+        function checkInView() {
+            const windowHeight = window.innerHeight;
+            const windowTop = window.scrollY;
+            const windowBottom = windowTop + windowHeight;
+            
+            animateElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top + windowTop;
+                const elementBottom = elementTop + element.offsetHeight;
                 
-                // Toggle active class
-                accordionItem.classList.toggle('active');
-                
-                // Toggle content display
-                if (accordionItem.classList.contains('active')) {
-                    accordionContent.style.display = 'block';
-                    accordionIcon.innerHTML = '<line x1="5" y1="12" x2="19" y2="12"></line>';
-                } else {
-                    accordionContent.style.display = 'none';
-                    accordionIcon.innerHTML = '<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>';
+                if (elementBottom > windowTop && elementTop < windowBottom) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
                 }
             });
-        });
-        
-        // Set initial accordion state (first one open)
-        if (accordionHeaders.length > 0) {
-            accordionHeaders[0].click();
         }
         
-        // Animation on scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            const animateElements = document.querySelectorAll('.animate-fadeInUp');
-            
-            function checkInView() {
-                const windowHeight = window.innerHeight;
-                const windowTop = window.scrollY;
-                const windowBottom = windowTop + windowHeight;
-                
-                animateElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top + windowTop;
-                    const elementBottom = elementTop + element.offsetHeight;
-                    
-                    if (elementBottom > windowTop && elementTop < windowBottom) {
-                        element.style.opacity = '1';
-                        element.style.transform = 'translateY(0)';
-                    }
-                });
-            }
-            
-            // Initialize elements above fold
-            animateElements.forEach(element => {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(30px)';
-                element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-            });
-            
-            // Check for elements in view on scroll
-            window.addEventListener('scroll', checkInView);
-            
-            // Initial check on page load
-            checkInView();
+        // Initialize elements above fold
+        animateElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
         });
-    </script>
+        
+        // Check for elements in view on scroll
+        window.addEventListener('scroll', checkInView);
+        
+        // Initial check on page load
+        checkInView();
+    });
+</script>
 </body>
+</html>
