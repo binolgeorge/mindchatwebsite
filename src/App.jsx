@@ -607,16 +607,30 @@ const App = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-3 min-h-[60px]">
+          <div className="flex items-center justify-between w-full h-[60px]">
             <motion.div 
-              className="text-xl sm:text-2xl font-display font-bold gradient-text"
+              className="flex items-center h-full"
               whileHover={{ scale: 1.05 }}
             >
-              BelloHire
+              <img 
+                src="./logo/bellohire-logo.png" 
+                alt="BelloHire Logo" 
+                className="h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <span 
+                className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text ml-2"
+                style={{ display: 'none' }}
+              >
+                BelloHire
+              </span>
             </motion.div>
             
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-6 h-full">
               {[
                 { name: 'Features', id: 'features' },
                 { name: 'How it works', id: 'how-it-works' },
@@ -669,6 +683,23 @@ const App = () => {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
             >
               <div className="p-6 pt-20">
+                <div className="flex items-center justify-center mb-8 pb-4 border-b border-white/10">
+                  <img 
+                    src="./logo/bellohire-logo.png" 
+                    alt="BelloHire Logo" 
+                    className="h-14 w-14 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-28 lg:w-28 object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }}
+                  />
+                  <span 
+                    className="text-xl font-display font-bold gradient-text ml-2"
+                    style={{ display: 'none' }}
+                  >
+                    BelloHire
+                  </span>
+                </div>
                 {[
                   { name: 'Features', id: 'features' },
                   { name: 'How it works', id: 'how-it-works' },

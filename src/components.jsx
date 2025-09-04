@@ -1049,8 +1049,25 @@ export const Footer = React.memo(() => {
           </div>
           
           <div className="border-t border-slate-800 pt-8">
-            <p className="text-slate-500">
-              © 2024 BelloHire. All rights reserved. Built with ❤️ for better hiring.
+            <div className="flex items-center justify-center mb-4">
+              <img 
+                src="./logo/bellohire-logo.png" 
+                alt="BelloHire Logo" 
+                className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <span 
+                className="text-lg font-display font-bold gradient-text ml-2"
+                style={{ display: 'none' }}
+              >
+                BelloHire
+              </span>
+            </div>
+            <p className="text-slate-500 text-center">
+              © 2025 BelloHire. All rights reserved. Built with ❤️ for better hiring.
             </p>
           </div>
         </div>
