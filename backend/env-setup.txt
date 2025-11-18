@@ -1,0 +1,20 @@
+# Copy this content to backend/.env file
+
+# Stripe Configuration
+STRIPE_SECRET_KEY=sk_test_51SScpnDLOLWBXVi6ivJtijYokqXqKXDKmabAICJ10dj3XHduHf58AzkXssy0LddL1kBeSt9iHkqYx2D0SKaaYopR00zICGmJGp
+STRIPE_PUBLISHABLE_KEY=pk_test_51SScpnDLOLWBXVi6P4Ag3TJC3SkfKElOhXpZA6AgbywkOGGFVGUfKj9edMGBoQzgxKUSpgLk9rs13cQFzWmO0zH300R5vwg3ux
+
+# Frontend URL (update when deploying)
+FRONTEND_URL=http://localhost:3000
+
+# Server Port
+PORT=3001
+
+# Email Configuration (Optional - for order confirmations)
+# EMAIL_USER=your-email@gmail.com
+# EMAIL_PASS=your-app-password
+# ADMIN_EMAIL=admin@yourdomain.com  # Admin will receive email notifications for new orders
+
+# Webhook Secret (get from Stripe Dashboard when setting up webhooks)
+# STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+
