@@ -203,29 +203,3 @@ MindChat is a **mental wellness support tool** and is NOT:
 
 Copyright © 2025 MindChat. All rights reserved.
 
-## 👥 Team
-
-- **Binol George** - Founder & CEO
-- **Jack Felice** - Chief Financial Officer
-
-## 📞 Contact
-
-- Website: [mindchat.com](https://mindchat.com)
-- Email: contact@mindchat.com
-- Support: support@mindchat.com
-
-## 🚧 Development Status
-
-Active development. Main features implemented:
-- ✅ Marketing website
-- ✅ E-commerce platform
-- ✅ Provider dashboard
-- ✅ Mobile app (React Native)
-- ✅ Scientific foundation documentation
-- 🔄 EEG integration (in progress)
-- 🔄 AI coaching algorithms (in progress)
-
----
-
-**Built with ❤️ to make mental health monitoring accessible to everyone**
-
