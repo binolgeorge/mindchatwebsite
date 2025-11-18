@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order | MindChat</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .tracking-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 8rem;
+        }
+        .tracking-form {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+        .order-details {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+        .order-details.show {
+            display: block;
+        }
+        .status-timeline {
+            margin: 2rem 0;
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-light);
+            border: 3px solid var(--white);
+            z-index: 2;
+        }
+        .timeline-item.active::before {
+            background: var(--primary);
+        }
+        .timeline-item.completed::before {
+            background: var(--success);
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1.2rem;
+            width: 2px;
+            height: calc(100% - 0.5rem);
+            background: var(--text-light);
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        .timeline-item.completed::after {
+            background: var(--success);
+        }
+        .cancel-btn {
+            background: var(--danger);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .cancel-btn:hover {
+            background: #e0254f;
+        }
+        .cancel-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="navbar">
+        <div class="navbar-container container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MindChat Logo" width="32" height="32">
+                <span>MindChat</span>
+            </a>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item"><a href="science.html" class="nav-link">Scientific Research</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="buy.html" class="nav-link">
+                        Buy Now
+                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="order-tracking.html" class="dropdown-item">Order Tracking</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="contact.html" class="nav-cta">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Contact Us
+                </a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="tracking-container">
+        <div class="tracking-form">
+            <h2 style="margin-bottom: 1rem;">Track Your Order</h2>
+            <p style="color: var(--text-light); margin-bottom: 2rem;">Enter your order number and email to track your shipment</p>
+            
+            <form id="trackingForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label class="form-label" for="orderNumber">Order Number *</label>
+                        <input type="text" id="orderNumber" name="orderNumber" class="form-control" required placeholder="e.g., ORD-123456">
+                    </div>
+                    <div>
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Track Order</button>
+            </form>
+        </div>
+        
+        <div class="order-details" id="orderDetails">
+            <h2 style="margin-bottom: 1rem;">Order Details</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <div>
+                    <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Order Number</h4>
+                    <p id="orderNum" style="font-weight: 600;"></p>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Order Status</h4>
+                    <p id="orderStatus" style="font-weight: 600;"></p>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Order Date</h4>
+                    <p id="orderDate"></p>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Total Amount</h4>
+                    <p id="orderTotal" style="font-weight: 600;"></p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Shipping Address</h3>
+                <p id="shippingAddress"></p>
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Order Items</h3>
+                <div id="orderItems"></div>
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Tracking Information</h3>
+                <div class="status-timeline" id="statusTimeline">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <div id="trackingNumber" style="margin-top: 1rem;"></div>
+            </div>
+            
+            <button class="cancel-btn" id="cancelBtn" onclick="cancelOrder()">Cancel Order</button>
+        </div>
+        
+        <div id="errorMessage" style="display: none; background: #fee; color: #c33; padding: 1rem; border-radius: var(--border-radius-sm); margin-top: 1rem;"></div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        const statuses = {
+            'pending': 'Payment Pending',
+            'paid': 'Payment Received',
+            'processing': 'Processing',
+            'shipped': 'Shipped',
+            'delivered': 'Delivered',
+            'cancelled': 'Cancelled',
+            'refunded': 'Refunded'
+        };
+        
+        const statusOrder = ['pending', 'paid', 'processing', 'shipped', 'delivered'];
+        
+        function getStatusClass(status, currentStatus) {
+            const currentIndex = statusOrder.indexOf(currentStatus);
+            const statusIndex = statusOrder.indexOf(status);
+            
+            if (statusIndex < currentIndex) return 'completed';
+            if (statusIndex === currentIndex) return 'active';
+            return '';
+        }
+        
+        function renderTimeline(orderStatus) {
+            const timeline = document.getElementById('statusTimeline');
+            timeline.innerHTML = '';
+            
+            statusOrder.forEach(status => {
+                const item = document.createElement('div');
+                item.className = `timeline-item ${getStatusClass(status, orderStatus)}`;
+                item.innerHTML = `
+                    <h4 style="margin-bottom: 0.5rem;">${statuses[status]}</h4>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">${getStatusDescription(status)}</p>
+                `;
+                timeline.appendChild(item);
+            });
+        }
+        
+        function getStatusDescription(status) {
+            const descriptions = {
+                'pending': 'Waiting for payment confirmation',
+                'paid': 'Payment received, preparing your order',
+                'processing': 'Your order is being prepared',
+                'shipped': 'Your order is on the way',
+                'delivered': 'Your order has been delivered'
+            };
+            return descriptions[status] || '';
+        }
+        
+        const API_BASE = 'http://localhost:3001/api';
+        
+        document.getElementById('trackingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const orderNumber = document.getElementById('orderNumber').value;
+            const email = document.getElementById('email').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const orderDetails = document.getElementById('orderDetails');
+            
+            errorDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE}/orders/track?orderNumber=${orderNumber}&email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Display order details
+                document.getElementById('orderNum').textContent = data.order.order_id;
+                document.getElementById('orderStatus').textContent = statuses[data.order.status] || data.order.status;
+                document.getElementById('orderDate').textContent = new Date(data.order.created_at).toLocaleDateString();
+                document.getElementById('orderTotal').textContent = `$${parseFloat(data.order.total_amount).toFixed(2)}`;
+                document.getElementById('shippingAddress').textContent = data.order.shipping_address;
+                
+                // Display order items
+                const items = JSON.parse(data.order.items || '[]');
+                document.getElementById('orderItems').innerHTML = items.map(item => 
+                    `<p>${item.name} x ${item.quantity} - $${item.price}</p>`
+                ).join('');
+                
+                // Display tracking
+                if (data.order.tracking_number) {
+                    document.getElementById('trackingNumber').innerHTML = `
+                        <p><strong>Tracking Number:</strong> ${data.order.tracking_number}</p>
+                        <a href="https://tools.usps.com/go/TrackConfirmAction?tLabels=${data.order.tracking_number}" target="_blank" class="btn btn-primary" style="margin-top: 1rem;">Track on USPS</a>
+                    `;
+                }
+                
+                // Render timeline
+                renderTimeline(data.order.status);
+                
+                // Show/hide cancel button
+                const cancelBtn = document.getElementById('cancelBtn');
+                if (['pending', 'paid', 'processing'].includes(data.order.status)) {
+                    cancelBtn.style.display = 'block';
+                    cancelBtn.onclick = () => cancelOrder(data.order.order_id);
+                } else {
+                    cancelBtn.style.display = 'none';
+                }
+                
+                orderDetails.classList.add('show');
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Order not found. Please check your order number and email.';
+                errorDiv.style.display = 'block';
+                orderDetails.classList.remove('show');
+            }
+        });
+        
+        async function cancelOrder(orderId) {
+            if (!confirm('Are you sure you want to cancel this order? A refund will be processed if payment was already made.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/orders/${orderId}/cancel`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                alert('Order cancelled successfully. Refund will be processed within 5-10 business days.');
+                location.reload();
+            } catch (error) {
+                alert('Error cancelling order: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+

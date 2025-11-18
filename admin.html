@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | MindChat</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        :root {
+            --admin-bg: #f5f7fa;
+            --admin-card: #ffffff;
+            --admin-border: #e1e8ed;
+            --admin-text: #1a202c;
+            --admin-text-light: #718096;
+            --admin-primary: #4361ee;
+            --admin-primary-hover: #3a56d4;
+            --admin-success: #10b981;
+            --admin-warning: #f59e0b;
+            --admin-danger: #ef4444;
+            --admin-info: #3b82f6;
+            --admin-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --admin-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background: var(--admin-bg);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+
+        .admin-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 6rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--admin-text);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--admin-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--admin-shadow);
+            border: 1px solid var(--admin-border);
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--admin-shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--admin-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stat-card-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--admin-text);
+            margin: 0;
+        }
+
+        .stat-card-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            color: var(--admin-success);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: var(--admin-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--admin-shadow);
+            border: 1px solid var(--admin-border);
+        }
+
+        .filter-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.625rem 1.25rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--admin-text-light);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            background: #f7fafc;
+            color: var(--admin-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--admin-primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+        }
+
+        .filters-container {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .filter-input::placeholder {
+            color: var(--admin-text-light);
+        }
+
+        .search-input {
+            width: 240px;
+            padding-left: 2.5rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/path%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 0.75rem center;
+        }
+
+        /* Orders Table */
+        .orders-table {
+            background: var(--admin-card);
+            border-radius: 12px;
+            box-shadow: var(--admin-shadow);
+            border: 1px solid var(--admin-border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8fafc;
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--admin-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--admin-border);
+        }
+
+        td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--admin-border);
+            color: var(--admin-text);
+        }
+
+        tbody tr {
+            transition: all 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-pending { 
+            background: #fef3c7; 
+            color: #92400e; 
+        }
+        .status-pending::before { background: #f59e0b; }
+
+        .status-paid { 
+            background: #dbeafe; 
+            color: #1e40af; 
+        }
+        .status-paid::before { background: #3b82f6; }
+
+        .status-processing { 
+            background: #d1fae5; 
+            color: #065f46; 
+        }
+        .status-processing::before { background: #10b981; }
+
+        .status-shipped { 
+            background: #e0e7ff; 
+            color: #3730a3; 
+        }
+        .status-shipped::before { background: #6366f1; }
+
+        .status-delivered { 
+            background: #d1fae5; 
+            color: #065f46; 
+        }
+        .status-delivered::before { background: #10b981; }
+
+        .status-cancelled { 
+            background: #fee2e2; 
+            color: #991b1b; 
+        }
+        .status-cancelled::before { background: #ef4444; }
+
+        .status-refunded { 
+            background: #f3f4f6; 
+            color: #374151; 
+        }
+        .status-refunded::before { background: #6b7280; }
+
+        /* Buttons */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--admin-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--admin-primary-hover);
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--admin-text);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: var(--admin-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--admin-card);
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--admin-shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #orderDetailsModal .modal-content {
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--admin-text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        /* Customer Info */
+        .customer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: var(--admin-text);
+        }
+
+        .customer-email {
+            font-size: 0.8125rem;
+            color: var(--admin-text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .admin-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+                margin-top: 5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-bar-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tabs-container {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .filters-container {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filter-input {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.8125rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="navbar">
+        <div class="navbar-container container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MindChat Logo" width="32" height="32">
+                <span>MindChat</span>
+            </a>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Order Management</h1>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-secondary" onclick="seedDummyData()" id="seedBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    Seed 200 Orders
+                </button>
+                <button class="btn btn-primary" onclick="loadOrders()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 1 1 11.8-8.3M22 12.5a10 10 0 1 1-11.8 8.3"/>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Total Orders</span>
+                    <div class="stat-card-icon" style="background: #dbeafe; color: #1e40af;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-card-value" id="statTotal">0</h3>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Pending</span>
+                    <div class="stat-card-icon" style="background: #fef3c7; color: #92400e;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-card-value" id="statPending">0</h3>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Total Revenue</span>
+                    <div class="stat-card-icon" style="background: #d1fae5; color: #065f46;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-card-value" id="statRevenue">$0.00</h3>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-title">Delivered</span>
+                    <div class="stat-card-icon" style="background: #d1fae5; color: #065f46;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="stat-card-value" id="statDelivered">0</h3>
+            </div>
+        </div>
+        
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-bar-content">
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab('all')" id="tab-all">All Orders</button>
+                    <button class="tab-btn" onclick="switchTab('pending')" id="tab-pending">Pending</button>
+                    <button class="tab-btn" onclick="switchTab('paid')" id="tab-paid">Paid</button>
+                    <button class="tab-btn" onclick="switchTab('processing')" id="tab-processing">Processing</button>
+                    <button class="tab-btn" onclick="switchTab('shipped')" id="tab-shipped">Shipped</button>
+                    <button class="tab-btn" onclick="switchTab('delivered')" id="tab-delivered">Delivered</button>
+                    <button class="tab-btn" onclick="switchTab('cancelled')" id="tab-cancelled">Cancelled</button>
+                </div>
+                <div class="filters-container">
+                    <input type="text" id="searchInput" class="filter-input search-input" placeholder="Search orders..." onkeyup="handleSearch()">
+                    <input type="date" id="dateFrom" class="filter-input" onchange="loadOrders()" title="Date From">
+                    <input type="date" id="dateTo" class="filter-input" onchange="loadOrders()" title="Date To">
+                    <select id="sortBy" class="filter-input" onchange="loadOrders()" title="Sort By" style="width: 180px;">
+                        <option value="created_at_desc">Newest First</option>
+                        <option value="created_at_asc">Oldest First</option>
+                        <option value="total_amount_desc">Amount: High to Low</option>
+                        <option value="total_amount_asc">Amount: Low to High</option>
+                        <option value="customer_name_asc">Customer Name: A-Z</option>
+                        <option value="customer_name_desc">Customer Name: Z-A</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Orders Table -->
+        <div class="orders-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Shipping Address</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 2rem; color: var(--admin-text-light);">Loading orders...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal" id="orderDetailsModal" onclick="if(event.target === this) closeOrderDetailsModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--admin-text);">Order Details</h2>
+                <button onclick="closeOrderDetailsModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--admin-text-light); padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">×</button>
+            </div>
+            <div id="orderDetailsContent">
+                <p>Loading...</p>
+            </div>
+            
+            <!-- Update Status Section -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--admin-border);">
+                <h3 style="margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600; color: var(--admin-text);">Update Order Status</h3>
+                <form id="statusForm">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select id="statusSelect" class="form-control" required>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tracking Number (if shipping)</label>
+                        <input type="text" id="trackingNumber" class="form-control" placeholder="Enter tracking number">
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeOrderDetailsModal()">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refund Modal -->
+    <div class="modal" id="refundModal" onclick="if(event.target === this) closeRefundModal()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--admin-text);">Process Refund</h2>
+                <button onclick="closeRefundModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--admin-text-light); padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='none'">×</button>
+            </div>
+            
+            <div id="refundOrderInfo" style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--admin-border); margin-bottom: 1.5rem;">
+                <p style="margin: 0; color: var(--admin-text-light); font-size: 0.875rem;">Loading order information...</p>
+            </div>
+            
+            <form id="refundForm">
+                <div class="form-group">
+                    <label class="form-label">Refund Type</label>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.75rem; border: 2px solid var(--admin-border); border-radius: 8px; flex: 1; transition: all 0.2s;" id="fullRefundLabel">
+                            <input type="radio" name="refundType" value="full" id="fullRefund" checked onchange="updateRefundAmount()" style="margin: 0;">
+                            <span style="font-weight: 600;">Full Refund</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.75rem; border: 2px solid var(--admin-border); border-radius: 8px; flex: 1; transition: all 0.2s;" id="partialRefundLabel">
+                            <input type="radio" name="refundType" value="partial" id="partialRefund" onchange="updateRefundAmount()" style="margin: 0;">
+                            <span style="font-weight: 600;">Partial Refund</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="partialAmountGroup" style="display: none;">
+                    <label class="form-label">Refund Amount</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--admin-text-light); font-weight: 600;">$</span>
+                        <input type="number" id="refundAmount" class="form-control" step="0.01" min="0.01" placeholder="0.00" style="padding-left: 2rem;" oninput="validateRefundAmount()">
+                    </div>
+                    <div id="refundAmountError" style="color: var(--admin-danger); font-size: 0.875rem; margin-top: 0.5rem; display: none;"></div>
+                    <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-top: 0.5rem;">
+                        Order total: <strong id="orderTotalDisplay">$0.00</strong>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Refund Reason <span style="color: var(--admin-text-light); font-weight: normal;">(required)</span></label>
+                    <select id="refundReason" class="form-control" required>
+                        <option value="">Select a reason...</option>
+                        <option value="customer_request">Customer Request</option>
+                        <option value="defective_item">Defective Item</option>
+                        <option value="wrong_item">Wrong Item Shipped</option>
+                        <option value="not_delivered">Item Not Delivered</option>
+                        <option value="duplicate_order">Duplicate Order</option>
+                        <option value="fraudulent">Fraudulent Transaction</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="refundNotesGroup">
+                    <label class="form-label">Additional Notes</label>
+                    <textarea id="refundNotes" class="form-control" rows="3" placeholder="Add any additional details about this refund..."></textarea>
+                </div>
+                
+                <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: start;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                            <path d="M12 9v4M12 17h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                        </svg>
+                        <div style="font-size: 0.875rem; color: #92400e;">
+                            <strong>Important:</strong> Refunds typically take 5-10 business days to appear in the customer's account. The customer will receive an email notification once the refund is processed.
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-danger" id="refundSubmitBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3l18 18M9 9l3-3m-3 3v6m0-6h6m-6 0l3 3"/>
+                        </svg>
+                        Process Refund
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeRefundModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Update this URL when deploying to production
+        const API_BASE = 'http://localhost:3001/api';
+        let currentOrderId = null;
+        let currentTab = 'all';
+        let allOrders = [];
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            
+            filterAndDisplayOrders();
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filterAndDisplayOrders();
+        }
+
+        function filterAndDisplayOrders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            let filtered = [...allOrders];
+            
+            // Apply tab filter
+            if (currentTab !== 'all') {
+                filtered = filtered.filter(order => order.status === currentTab);
+            }
+            
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(order => 
+                    order.order_id.toLowerCase().includes(searchTerm) ||
+                    order.customer_name.toLowerCase().includes(searchTerm) ||
+                    order.customer_email.toLowerCase().includes(searchTerm) ||
+                    order.shipping_address.toLowerCase().includes(searchTerm) ||
+                    order.product_name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Apply date filters
+            if (dateFrom) {
+                filtered = filtered.filter(order => new Date(order.created_at) >= new Date(dateFrom));
+            }
+            if (dateTo) {
+                const toDate = new Date(dateTo);
+                toDate.setHours(23, 59, 59, 999);
+                filtered = filtered.filter(order => new Date(order.created_at) <= toDate);
+            }
+            
+            // Apply sorting
+            filtered.sort((a, b) => {
+                const [field, direction] = sortBy.split('_');
+                const fieldName = field === 'created' ? 'created_at' : 
+                                 field === 'total' ? 'total_amount' : 
+                                 field === 'customer' ? 'customer_name' : 'created_at';
+                
+                let aVal = a[fieldName];
+                let bVal = b[fieldName];
+                
+                if (fieldName === 'created_at') {
+                    aVal = new Date(aVal);
+                    bVal = new Date(bVal);
+                } else if (fieldName === 'total_amount') {
+                    aVal = parseFloat(aVal);
+                    bVal = parseFloat(bVal);
+                } else {
+                    aVal = String(aVal).toLowerCase();
+                    bVal = String(bVal).toLowerCase();
+                }
+                
+                if (direction === 'desc') {
+                    return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+                } else {
+                    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+                }
+            });
+            
+            displayOrders(filtered);
+        }
+
+        function updateStats(orders) {
+            const total = orders.length;
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const delivered = orders.filter(o => o.status === 'delivered').length;
+            const revenue = orders
+                .filter(o => o.status !== 'cancelled' && o.status !== 'refunded')
+                .reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statDelivered').textContent = delivered;
+            document.getElementById('statRevenue').textContent = '$' + revenue.toFixed(2);
+        }
+
+        function displayOrders(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 3rem; color: var(--admin-text-light);">No orders found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = orders.map(order => `
+                        <tr>
+                            <td style="font-weight: 600; color: var(--admin-primary);">${order.order_id}</td>
+                            <td>
+                                <div class="customer-info">
+                                    <span class="customer-name">${order.customer_name}</span>
+                                    <span class="customer-email">${order.customer_email}</span>
+                                </div>
+                            </td>
+                            <td>${order.product_name} x${order.quantity}</td>
+                            <td style="font-weight: 600; color: var(--admin-text);">$${parseFloat(order.total_amount).toFixed(2)}</td>
+                            <td style="max-width: 200px; font-size: 0.875rem; color: var(--admin-text-light);">
+                                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.shipping_address}">
+                                    ${order.shipping_address}
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                            <td style="color: var(--admin-text-light); font-size: 0.875rem;">${new Date(order.created_at).toLocaleDateString()}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary btn-sm" onclick="viewOrderDetails('${order.order_id}')">View</button>
+                                    ${(order.status === 'paid' || order.status === 'processing' || order.status === 'shipped') && order.status !== 'refunded' ? 
+                                        `<button class="btn btn-danger btn-sm" onclick="openRefundModal('${order.order_id}')">Refund</button>` : 
+                                        ''
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+        }
+
+        function loadOrders() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            // Build query string
+            let queryParams = [];
+            if (dateFrom) queryParams.push(`dateFrom=${dateFrom}`);
+            if (dateTo) queryParams.push(`dateTo=${dateTo}`);
+            
+            const queryString = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
+            
+            fetch(`${API_BASE}/admin/orders${queryString}`)
+                .then(res => res.json())
+                .then(data => {
+                    allOrders = data.orders || [];
+                    updateStats(allOrders);
+                    filterAndDisplayOrders();
+                })
+                .catch(err => {
+                    console.error('Error loading orders:', err);
+                    document.getElementById('ordersTableBody').innerHTML = 
+                        '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--danger);">Error loading orders. Check backend connection.</td></tr>';
+                });
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('sortBy').value = 'created_at_desc';
+            currentTab = 'all';
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-all').classList.add('active');
+            filterAndDisplayOrders();
+        }
+
+        function viewOrderDetails(orderId) {
+            currentOrderId = orderId;
+            
+            fetch(`${API_BASE}/admin/orders/${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    const order = data.order;
+                    const items = JSON.parse(order.items || '[]');
+                    
+                    document.getElementById('orderDetailsContent').innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--admin-border);">
+                                <h4 style="color: var(--admin-text-light); margin-bottom: 1rem; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Order Information</h4>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Order ID:</span><br><strong style="color: var(--admin-primary);">${order.order_id}</strong></div>
+                                    <div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Status:</span><br><span class="status-badge status-${order.status}">${order.status}</span></div>
+                                    <div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Date:</span><br><strong>${new Date(order.created_at).toLocaleString()}</strong></div>
+                                    <div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Total:</span><br><strong style="font-size: 1.25rem; color: var(--admin-text);">$${parseFloat(order.total_amount).toFixed(2)}</strong></div>
+                                    ${order.tracking_number ? `<div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Tracking:</span><br><strong>${order.tracking_number}</strong></div>` : ''}
+                                </div>
+                            </div>
+                            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--admin-border);">
+                                <h4 style="color: var(--admin-text-light); margin-bottom: 1rem; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Customer Information</h4>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Name:</span><br><strong>${order.customer_name}</strong></div>
+                                    <div><span style="color: var(--admin-text-light); font-size: 0.875rem;">Email:</span><br><a href="mailto:${order.customer_email}" style="color: var(--admin-primary); text-decoration: none;">${order.customer_email}</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 2rem;">
+                            <h4 style="color: var(--admin-text-light); margin-bottom: 1rem; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Shipping Address</h4>
+                            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--admin-border);">
+                                <p style="white-space: pre-line; font-size: 0.9375rem; line-height: 1.8; color: var(--admin-text); margin-bottom: 1rem;">${order.shipping_address}</p>
+                                <button class="btn btn-secondary btn-sm" onclick="copyShippingAddress('${order.shipping_address.replace(/'/g, "\\'")}')">
+                                    Copy Address
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--admin-text-light); margin-bottom: 1rem; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Order Items</h4>
+                            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--admin-border);">
+                                ${items.map(item => `
+                                    <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--admin-border);">
+                                        <div>
+                                            <strong style="color: var(--admin-text);">${item.name}</strong>
+                                            <div style="font-size: 0.875rem; color: var(--admin-text-light);">Quantity: ${item.quantity}</div>
+                                        </div>
+                                        <strong style="color: var(--admin-text);">$${item.price}</strong>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Set current status and tracking number in the form
+                    document.getElementById('statusSelect').value = order.status;
+                    document.getElementById('trackingNumber').value = order.tracking_number || '';
+                    
+                    document.getElementById('orderDetailsModal').classList.add('show');
+                })
+                .catch(err => {
+                    console.error('Error loading order details:', err);
+                    alert('Error loading order details');
+                });
+        }
+
+        function closeOrderDetailsModal() {
+            document.getElementById('orderDetailsModal').classList.remove('show');
+            currentOrderId = null;
+        }
+
+        function copyShippingAddress(address) {
+            navigator.clipboard.writeText(address).then(() => {
+                alert('Shipping address copied to clipboard!');
+            }).catch(err => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = address;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('Shipping address copied to clipboard!');
+            });
+        }
+
+        document.getElementById('statusForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentOrderId) {
+                alert('No order selected');
+                return;
+            }
+            
+            const status = document.getElementById('statusSelect').value;
+            const trackingNumber = document.getElementById('trackingNumber').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders/${currentOrderId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status, trackingNumber })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Order status updated successfully!');
+                    loadOrders();
+                    // Reload order details to show updated status
+                    viewOrderDetails(currentOrderId);
+                }
+            } catch (error) {
+                alert('Error updating status: ' + error.message);
+            }
+        });
+
+        let refundOrderData = null;
+
+        function openRefundModal(orderId) {
+            // Fetch order details first
+            fetch(`${API_BASE}/admin/orders/${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    refundOrderData = data.order;
+                    
+                    // Display order info
+                    document.getElementById('refundOrderInfo').innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Order ID</div>
+                                <strong style="color: var(--admin-primary);">${refundOrderData.order_id}</strong>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Customer</div>
+                                <strong>${refundOrderData.customer_name}</strong>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Order Total</div>
+                                <strong style="font-size: 1.25rem; color: var(--admin-text);">$${parseFloat(refundOrderData.total_amount).toFixed(2)}</strong>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Status</div>
+                                <span class="status-badge status-${refundOrderData.status}">${refundOrderData.status}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Set order total
+                    document.getElementById('orderTotalDisplay').textContent = `$${parseFloat(refundOrderData.total_amount).toFixed(2)}`;
+                    
+                    // Reset form
+                    document.getElementById('refundForm').reset();
+                    document.getElementById('fullRefund').checked = true;
+                    document.getElementById('partialRefund').checked = false;
+                    document.getElementById('partialAmountGroup').style.display = 'none';
+                    document.getElementById('refundAmountError').style.display = 'none';
+                    updateRefundAmount();
+                    
+                    // Show modal
+                    document.getElementById('refundModal').classList.add('show');
+                })
+                .catch(err => {
+                    console.error('Error loading order:', err);
+                    alert('Error loading order details');
+                });
+        }
+
+        function closeRefundModal() {
+            document.getElementById('refundModal').classList.remove('show');
+            refundOrderData = null;
+        }
+
+        function updateRefundAmount() {
+            const isPartial = document.getElementById('partialRefund').checked;
+            const partialGroup = document.getElementById('partialAmountGroup');
+            
+            if (isPartial) {
+                partialGroup.style.display = 'block';
+                document.getElementById('refundAmount').required = true;
+                document.getElementById('partialRefundLabel').style.borderColor = 'var(--admin-primary)';
+                document.getElementById('fullRefundLabel').style.borderColor = 'var(--admin-border)';
+            } else {
+                partialGroup.style.display = 'none';
+                document.getElementById('refundAmount').required = false;
+                document.getElementById('refundAmount').value = '';
+                document.getElementById('fullRefundLabel').style.borderColor = 'var(--admin-primary)';
+                document.getElementById('partialRefundLabel').style.borderColor = 'var(--admin-border)';
+            }
+        }
+
+        function validateRefundAmount() {
+            if (!refundOrderData) return;
+            
+            const amountInput = document.getElementById('refundAmount');
+            const errorDiv = document.getElementById('refundAmountError');
+            const amount = parseFloat(amountInput.value);
+            const orderTotal = parseFloat(refundOrderData.total_amount);
+            
+            if (isNaN(amount) || amount <= 0) {
+                errorDiv.textContent = 'Please enter a valid amount greater than $0.00';
+                errorDiv.style.display = 'block';
+                amountInput.setCustomValidity('Invalid amount');
+                return false;
+            }
+            
+            if (amount > orderTotal) {
+                errorDiv.textContent = `Refund amount cannot exceed order total of $${orderTotal.toFixed(2)}`;
+                errorDiv.style.display = 'block';
+                amountInput.setCustomValidity('Amount exceeds order total');
+                return false;
+            }
+            
+            errorDiv.style.display = 'none';
+            amountInput.setCustomValidity('');
+            return true;
+        }
+
+        // Handle refund form submission
+        document.getElementById('refundForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!refundOrderData) {
+                alert('Order data not loaded');
+                return;
+            }
+            
+            const refundType = document.querySelector('input[name="refundType"]:checked').value;
+            const refundReason = document.getElementById('refundReason').value;
+            const refundNotes = document.getElementById('refundNotes').value;
+            
+            if (!refundReason) {
+                alert('Please select a refund reason');
+                return;
+            }
+            
+            let refundAmount = null;
+            if (refundType === 'partial') {
+                if (!validateRefundAmount()) {
+                    return;
+                }
+                refundAmount = parseFloat(document.getElementById('refundAmount').value);
+            }
+            
+            // Final confirmation
+            const confirmMessage = refundType === 'full' 
+                ? `Process full refund of $${parseFloat(refundOrderData.total_amount).toFixed(2)}?`
+                : `Process partial refund of $${refundAmount.toFixed(2)}?`;
+            
+            if (!confirm(confirmMessage + '\n\nThis action cannot be undone.')) {
+                return;
+            }
+            
+            const submitBtn = document.getElementById('refundSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders/${refundOrderData.order_id}/refund`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: refundAmount,
+                        reason: refundReason,
+                        notes: refundNotes
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert(`Refund processed successfully!\n\nRefund ID: ${data.refundId}\nAmount: $${(refundAmount || parseFloat(refundOrderData.total_amount)).toFixed(2)}`);
+                    closeRefundModal();
+                    loadOrders();
+                }
+            } catch (error) {
+                alert('Error processing refund: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18M9 9l3-3m-3 3v6m0-6h6m-6 0l3 3"/></svg> Process Refund';
+            }
+        });
+
+        // Legacy function for backward compatibility
+        function processRefund(orderId) {
+            openRefundModal(orderId);
+        }
+
+        async function seedDummyData() {
+            const btn = document.getElementById('seedBtn');
+            const originalText = btn.innerHTML;
+            
+            if (!confirm('This will add 200 dummy orders to the database. Continue?')) {
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Seeding...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/seed-orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ count: 200 })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`Successfully seeded ${data.inserted} orders!`);
+                    loadOrders();
+                } else {
+                    alert('Error seeding data: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error seeding data: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Load orders on page load
+        loadOrders();
+        
+        // Refresh every 30 seconds
+        setInterval(loadOrders, 30000);
+        
+        // Set default date to today for "Date To"
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateTo').value = today;
+    </script>
+</body>
+</html>
+
