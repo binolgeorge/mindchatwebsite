@@ -1,173 +1,231 @@
-# BelloHire - AI-Driven Recruitment Platform
+# MindChat - Mental Health Support Platform
 
-A stunning, futuristic React application showcasing an AI-powered recruitment platform with immersive space-themed UI and cutting-edge animations.
+A comprehensive mental health monitoring and support platform that combines EEG brain monitoring, AI coaching, and evidence-based mental wellness tools.
 
-## 🚀 Features
+## 🧠 About MindChat
 
-- **Immersive Space Experience**: Volumetric nebulas, shooting stars, and realistic planets with physics
-- **Interactive FAQ Section**: Premium glassmorphism design with smooth animations
-- **Framer Motion Animations**: Mind-blowing page transitions and micro-interactions
-- **React Spring Physics**: Physics-based animations for natural motion
-- **Responsive Design**: Optimized for all devices with mobile-first approach
-- **SEO Optimized**: Complete metadata, Open Graph tags, and JSON-LD schema
-- **Performance Optimized**: React.memo, useMemo, and lazy loading
+MindChat is an innovative mental health platform that integrates wearable EEG technology (Muse 2 headset) with AI-powered coaching to provide objective, data-driven mental wellness support. Our platform helps users track their mental state, receive personalized recommendations, and access professional support when needed.
 
-## 🛠 Tech Stack
+## 🌟 Key Features
 
-- **React 18** - Modern functional components with hooks
-- **Vite** - Lightning-fast build tool
-- **Tailwind CSS** - Utility-first CSS framework
-- **Framer Motion** - Production-ready motion library
-- **React Spring** - Spring-physics based animation library
-- **React Intersection Observer** - Scroll-triggered animations
-- **Lucide React** - Beautiful icon library
-
-## 🎨 Design Features
-
-- **Glassmorphism Effects**: Modern glass-like UI elements
-- **Gradient Backgrounds**: Dynamic space-themed gradients
-- **Magnetic Buttons**: Interactive hover effects
-- **Parallax Scrolling**: Depth and dimension
-- **Particle Systems**: Animated background elements
-- **3D Transforms**: CSS-based 3D effects
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 16+ 
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd bellohire
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
+- **Brain Monitoring Integration**: Real-time EEG data capture using Muse 2 headset
+- **AI Coach**: Personalized mental health recommendations based on neural biomarkers
+- **Evidence-Based Approach**: Built on peer-reviewed neuroscience and psychology research
+- **Validated Assessments**: PHQ-9, GAD-7, PSS-10, and other clinical-grade questionnaires
+- **Provider Dashboard**: Healthcare professionals can monitor and support their patients
+- **Concussion Awareness**: Post-impact neural monitoring support (non-diagnostic)
+- **E-commerce Integration**: Direct purchase of Muse 2 EEG headsets
 
 ## 📁 Project Structure
 
 ```
-src/
-├── App.jsx              # Main application component
-├── components.jsx       # Reusable UI components
-├── main.jsx            # Application entry point
-└── index.css           # Global styles and animations
+mindchatwebsite-main/
+├── index.html              # Landing page
+├── about.html              # Team and company information
+├── science.html            # Scientific foundation and research
+├── buy.html                # Muse headset purchase page
+├── checkout.html           # E-commerce checkout
+├── contact.html            # Contact form
+├── order-tracking.html     # Order status tracking
+├── order-success.html      # Order confirmation page
+├── admin.html              # Admin order management
+├── css/
+│   └── styles.css          # Main stylesheet
+├── js/
+│   └── main.js             # Frontend JavaScript
+├── images/                 # Static images
+├── backend/
+│   ├── server.js           # Node.js/Express backend (e-commerce)
+│   └── database.sqlite     # Order database
+├── mindchat-backend-main/  # Python/FastAPI backend (main app)
+└── mindchat-frontend-main/ # React web dashboard
 
-public/
-├── images/             # Static assets
-└── vite.svg           # Vite logo
-
-content/
-└── original.md        # Original website content
 ```
 
-## 🎯 Key Components
+## 🚀 Quick Start
 
-- **HeroSection**: Immersive landing with space background
-- **HeroDetailsSection**: Feature highlights with animations
-- **BenefitsSection**: Value propositions with icons
-- **FeaturesSection**: Product features showcase
-- **HowItWorksSection**: Step-by-step process
-- **PricingSection**: Three-tier pricing plans
-- **TrustSection**: Social proof and testimonials
-- **CandidateJourneySection**: User onboarding flow
-- **EmployerWorkflowSection**: Company setup process
-- **Footer**: FAQ and navigation links
+### E-commerce Backend (Node.js)
 
-## 🌟 Animation Features
+1. Navigate to backend folder:
+```bash
+cd backend
+npm install
+```
 
-- **Space Background**: Dynamic nebulas, shooting stars, and planets
-- **Mouse Interactions**: Responsive cosmic effects
-- **Scroll Animations**: Reveal animations on scroll
-- **Hover Effects**: Interactive element responses
-- **Loading States**: Smooth transitions and micro-animations
+2. Set up environment variables (create `.env`):
+```env
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password
+```
 
-## 📱 Responsive Design
+3. Start the backend:
+```bash
+node server.js
+```
+Backend runs on `http://localhost:3001`
 
-- **Mobile First**: Optimized for mobile devices
-- **Tablet Support**: Enhanced tablet experience
-- **Desktop**: Full-featured desktop interface
-- **Touch Friendly**: Optimized touch interactions
+### Main Website
 
-## 🔧 Customization
+Simply open `index.html` in a web browser, or use a local server:
+```bash
+# Using Python
+python -m http.server 8000
 
-### Colors
-Edit the color scheme in `tailwind.config.js`:
+# Using Node.js http-server
+npx http-server -p 8000
+```
+
+### React Dashboard (Optional)
+
+1. Navigate to frontend folder:
+```bash
+cd mindchat-frontend-main
+npm install
+```
+
+2. Configure backend URL in `public/config.js`:
 ```javascript
-colors: {
-  'neon-blue': '#00d4ff',
-  'neon-green': '#00ff88',
-  'neon-purple': '#8b5cf6',
-  'neon-pink': '#ff0080',
-  'neon-cyan': '#00ffff',
-}
+window.ENV = {
+  BACKEND_URL: "http://localhost:8000"
+};
 ```
 
-### Animations
-Modify animations in `src/index.css`:
-```css
-@keyframes shooting-star {
-  /* Custom animation keyframes */
-}
+3. Start development server:
+```bash
+npm run dev
 ```
 
-## 🚀 Deployment
+### Python Backend (Optional)
 
-### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Deploy automatically on every push
+1. Navigate to backend folder:
+```bash
+cd mindchat-backend-main
+pip install -r requirements.txt
+```
 
-### Netlify
-1. Build the project: `npm run build`
-2. Deploy the `dist` folder to Netlify
+2. Set up environment variables (create `.env`):
+```env
+DATABASE_URL=sqlite:///./mindchat_local.db
+SECRET_KEY=your_secret_key
+SENDGRID_API_KEY=your_sendgrid_key
+STRIPE_SECRET_KEY=your_stripe_key
+```
 
-### GitHub Pages
-1. Install gh-pages: `npm install --save-dev gh-pages`
-2. Add deploy script to package.json
-3. Run: `npm run deploy`
+3. Start the backend:
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+## 🛠 Technology Stack
+
+### Frontend
+- **HTML/CSS/JavaScript**: Static marketing website
+- **React + TypeScript**: Provider dashboard
+- **Vite**: Build tool for React app
+- **Tailwind CSS**: Styling
+- **shadcn/ui**: UI components
+
+### Backend
+- **Node.js + Express**: E-commerce backend
+- **Python + FastAPI**: Main application backend
+- **SQLite**: Local development database
+- **PostgreSQL**: Production database (recommended)
+
+### Integration & Services
+- **Stripe**: Payment processing
+- **SendGrid**: Email notifications
+- **Nodemailer**: Order confirmation emails
+- **Muse SDK**: EEG headset integration
+
+### Mobile App
+- **React Native + Expo**: Mobile application
+- **Redux Toolkit**: State management
+- **React Native Paper**: UI components
+
+## 🧪 Key Research Areas
+
+MindChat is built on peer-reviewed evidence across:
+1. Validated self-report scales (PHQ-9, GAD-7, PSS-10)
+2. EEG biomarkers and alpha asymmetry
+3. Wearable EEG technology (Muse)
+4. Concussion and mild TBI biomarkers
+5. CBT and digital interventions
+6. Mindfulness and lifestyle factors
+7. Pharmacology and treatment approaches
+8. Anxiety disorders and social anxiety
+9. Diagnostic guides and epidemiology
+
+*See `science.html` for complete reference list*
+
+## 🛒 E-commerce Features
+
+- Product catalog (Muse 2 headset)
+- Stripe checkout integration
+- Order tracking system
+- Email notifications
+- Admin order management dashboard
+- Guest checkout (no login required)
+
+## 📱 Provider Dashboard
+
+- Patient management
+- Test results visualization
+- EEG data analysis
+- Conversation history
+- Report generation
+- Marketplace for equipment
+
+## ⚠️ Important Disclaimer
+
+MindChat is a **mental wellness support tool** and is NOT:
+- A diagnostic tool
+- A replacement for professional medical care
+- FDA-approved medical device
+- A treatment for any condition
+
+**Always consult qualified healthcare professionals for diagnosis and treatment.**
+
+## 🔐 Security Features
+
+- JWT authentication
+- Password hashing (bcrypt)
+- HTTPS support
+- Environment variable protection
+- Input validation
+- CORS configuration
+- Rate limiting (backend)
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+Copyright © 2025 MindChat. All rights reserved.
 
-## 🤝 Contributing
+## 👥 Team
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+- **Binol George** - Founder & CEO
+- **Jack Felice** - Chief Financial Officer
 
-## 📞 Support
+## 📞 Contact
 
-For support, email support@bellohire.com or create an issue in the repository.
+- Website: [mindchat.com](https://mindchat.com)
+- Email: contact@mindchat.com
+- Support: support@mindchat.com
+
+## 🚧 Development Status
+
+Active development. Main features implemented:
+- ✅ Marketing website
+- ✅ E-commerce platform
+- ✅ Provider dashboard
+- ✅ Mobile app (React Native)
+- ✅ Scientific foundation documentation
+- 🔄 EEG integration (in progress)
+- 🔄 AI coaching algorithms (in progress)
 
 ---
 
-**Built with ❤️ using React, Framer Motion, and Tailwind CSS**
+**Built with ❤️ to make mental health monitoring accessible to everyone**
+
