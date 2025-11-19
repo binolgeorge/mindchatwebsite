@@ -62,6 +62,15 @@ app.post('/api/admin/login', loginLimiter, async (req, res) => {
             return res.status(400).json({ error: 'Username and password are required' });
         }
 
+        // Debug logging (remove in production)
+        console.log('Login attempt:', { 
+            receivedUsername: username, 
+            receivedPassword: password ? '***' : 'missing',
+            expectedUsername: ADMIN_USERNAME,
+            usernameMatch: username === ADMIN_USERNAME,
+            passwordMatch: password === ADMIN_PASSWORD
+        });
+
         // Validate credentials
         if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
             // Generate JWT token
@@ -107,6 +116,9 @@ db.serialize(() => {
         product_name TEXT NOT NULL,
         quantity INTEGER NOT NULL,
         total_amount REAL NOT NULL,
+        discount_amount REAL DEFAULT 0,
+        final_amount REAL NOT NULL,
+        coupon_code TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
         stripe_payment_intent_id TEXT,
         stripe_session_id TEXT,
@@ -116,6 +128,38 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+
+    // Coupons table
+    db.run(`CREATE TABLE IF NOT EXISTS coupons (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT UNIQUE NOT NULL,
+        discount_type TEXT NOT NULL CHECK(discount_type IN ('percentage', 'fixed')),
+        discount_value REAL NOT NULL,
+        min_purchase REAL DEFAULT 0,
+        max_discount REAL,
+        valid_from DATETIME NOT NULL,
+        valid_to DATETIME NOT NULL,
+        usage_limit INTEGER,
+        used_count INTEGER DEFAULT 0,
+        active INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    // Stock table
+    db.run(`CREATE TABLE IF NOT EXISTS stock (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id TEXT UNIQUE NOT NULL,
+        product_name TEXT NOT NULL,
+        stock_quantity INTEGER NOT NULL DEFAULT 0,
+        reserved_quantity INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    // Initialize default stock for Muse 2
+    db.run(`INSERT OR IGNORE INTO stock (product_id, product_name, stock_quantity) 
+            VALUES ('muse2', 'Muse 2 EEG Headset', 100)`);
 });
 
 // Email transporter (configure with your email service)
@@ -150,81 +194,155 @@ function generateOrderId() {
 // Create Stripe Checkout Session
 app.post('/api/create-checkout-session', async (req, res) => {
     try {
-        const { name, email, phone, address, city, state, zipcode, product, quantity, total } = req.body;
+        const { name, email, phone, address, city, state, zipcode, product, quantity, total, coupon_code } = req.body;
         
-        // Generate order ID
-        const orderId = generateOrderId();
-        
-        // Create Stripe Checkout Session
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [{
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product',
-                        description: 'MindChat compatible EEG headset',
-                    },
-                    unit_amount: Math.round(total * 100), // Convert to cents
-                },
-                quantity: quantity,
-            }],
-            mode: 'payment',
-            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/checkout.html`,
-            customer_email: email,
-            metadata: {
-                order_id: orderId,
-                customer_name: name,
-                customer_email: email,
-                customer_phone: phone,
-                shipping_address: `${address}, ${city}, ${state} ${zipcode}`,
-                product: product,
-                quantity: quantity.toString()
+        // Check stock availability
+        db.get('SELECT * FROM stock WHERE product_id = ?', [product], async (err, stock) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
             }
-        });
-        
-        // Save order to database
-        const shippingAddress = `${address}, ${city}, ${state} ${zipcode}`;
-        const items = JSON.stringify([{
-            name: product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product',
-            quantity: quantity,
-            price: (total / quantity).toFixed(2)
-        }]);
-        
-        db.run(
-            `INSERT INTO orders (order_id, customer_email, customer_name, product_name, quantity, total_amount, status, stripe_session_id, shipping_address, items)
-             VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
-            [orderId, email, name, product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product', quantity, total, session.id, shippingAddress, items],
-            (err) => {
-                if (err) {
-                    console.error('Database error:', err);
-                } else {
-                    // Send notification to admin when order is created (before payment)
-                    if (process.env.ADMIN_EMAIL) {
-                        sendEmail(
-                            process.env.ADMIN_EMAIL,
-                            `New Order Pending Payment - ${orderId}`,
-                            `
-                            <h2>New Order Created!</h2>
-                            <p><strong>Order ID:</strong> ${orderId}</p>
-                            <p><strong>Customer:</strong> ${name}</p>
-                            <p><strong>Email:</strong> ${email}</p>
-                            <p><strong>Product:</strong> ${product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product'} x${quantity}</p>
-                            <p><strong>Total:</strong> $${total.toFixed(2)}</p>
-                            <p><strong>Status:</strong> Pending Payment</p>
-                            <p><strong>Shipping Address:</strong> ${shippingAddress}</p>
-                            <p><a href="${process.env.FRONTEND_URL}/admin.html">View in Admin Panel</a></p>
-                            `
-                        );
+            if (!stock) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            
+            const available = stock.stock_quantity - stock.reserved_quantity;
+            if (available < quantity) {
+                return res.status(400).json({ 
+                    error: `Insufficient stock. Only ${available} units available.` 
+                });
+            }
+            
+            // Calculate discount if coupon provided
+            let discountAmount = 0;
+            let finalAmount = total;
+            let validCouponCode = null;
+            
+            if (coupon_code) {
+                db.get('SELECT * FROM coupons WHERE code = ? AND active = 1', [coupon_code.toUpperCase()], (err, coupon) => {
+                    if (!err && coupon) {
+                        const now = new Date();
+                        const validFrom = new Date(coupon.valid_from);
+                        const validTo = new Date(coupon.valid_to);
+                        
+                        if (now >= validFrom && now <= validTo) {
+                            if (!coupon.usage_limit || coupon.used_count < coupon.usage_limit) {
+                                if (total >= coupon.min_purchase) {
+                                    if (coupon.discount_type === 'percentage') {
+                                        discountAmount = (total * coupon.discount_value) / 100;
+                                        if (coupon.max_discount && discountAmount > coupon.max_discount) {
+                                            discountAmount = coupon.max_discount;
+                                        }
+                                    } else {
+                                        discountAmount = coupon.discount_value;
+                                    }
+                                    finalAmount = total - discountAmount;
+                                    validCouponCode = coupon.code;
+                                }
+                            }
+                        }
                     }
+                    createOrder();
+                });
+            } else {
+                createOrder();
+            }
+            
+            async function createOrder() {
+                try {
+                    // Generate order ID
+                    const orderId = generateOrderId();
+                    
+                    // Reserve stock temporarily
+                    db.run(
+                        'UPDATE stock SET reserved_quantity = reserved_quantity + ? WHERE product_id = ?',
+                        [quantity, product]
+                    );
+                    
+                    // Create Stripe Checkout Session
+                    const session = await stripe.checkout.sessions.create({
+                        payment_method_types: ['card'],
+                        line_items: [{
+                            price_data: {
+                                currency: 'usd',
+                                product_data: {
+                                    name: product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product',
+                                    description: 'MindChat compatible EEG headset',
+                                },
+                                unit_amount: Math.round(finalAmount * 100), // Convert to cents
+                            },
+                            quantity: quantity,
+                        }],
+                        mode: 'payment',
+                        success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+                        cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/checkout.html`,
+                        customer_email: email,
+                        metadata: {
+                            order_id: orderId,
+                            customer_name: name,
+                            customer_email: email,
+                            customer_phone: phone,
+                            shipping_address: `${address}, ${city}, ${state} ${zipcode}`,
+                            product: product,
+                            quantity: quantity.toString(),
+                            coupon_code: validCouponCode || '',
+                            discount_amount: discountAmount.toString()
+                        }
+                    });
+                    
+                    // Save order to database
+                    const shippingAddress = `${address}, ${city}, ${state} ${zipcode}`;
+                    const items = JSON.stringify([{
+                        name: product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product',
+                        quantity: quantity,
+                        price: (total / quantity).toFixed(2)
+                    }]);
+                    
+                    db.run(
+                        `INSERT INTO orders (order_id, customer_email, customer_name, product_name, quantity, total_amount, discount_amount, final_amount, coupon_code, status, stripe_session_id, shipping_address, items)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
+                        [orderId, email, name, product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product', quantity, total, discountAmount, finalAmount, validCouponCode, session.id, shippingAddress, items],
+                        (err) => {
+                            if (err) {
+                                console.error('Database error:', err);
+                            } else {
+                                // Update coupon usage count if used
+                                if (validCouponCode) {
+                                    db.run('UPDATE coupons SET used_count = used_count + 1 WHERE code = ?', [validCouponCode]);
+                                }
+                                
+                                // Send notification to admin
+                                if (process.env.ADMIN_EMAIL) {
+                                    sendEmail(
+                                        process.env.ADMIN_EMAIL,
+                                        `New Order Pending Payment - ${orderId}`,
+                                        `
+                                        <h2>New Order Created!</h2>
+                                        <p><strong>Order ID:</strong> ${orderId}</p>
+                                        <p><strong>Customer:</strong> ${name}</p>
+                                        <p><strong>Email:</strong> ${email}</p>
+                                        <p><strong>Product:</strong> ${product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product'} x${quantity}</p>
+                                        <p><strong>Subtotal:</strong> $${total.toFixed(2)}</p>
+                                        ${discountAmount > 0 ? `<p><strong>Discount (${validCouponCode}):</strong> -$${discountAmount.toFixed(2)}</p>` : ''}
+                                        <p><strong>Total:</strong> $${finalAmount.toFixed(2)}</p>
+                                        <p><strong>Status:</strong> Pending Payment</p>
+                                        <p><strong>Shipping Address:</strong> ${shippingAddress}</p>
+                                        <p><a href="${process.env.FRONTEND_URL}/admin.html">View in Admin Panel</a></p>
+                                        `
+                                    );
+                                }
+                            }
+                        }
+                    );
+                    
+                    res.json({ sessionId: session.id, orderId, discountAmount, finalAmount });
+                } catch (error) {
+                    console.error('Stripe error:', error);
+                    res.status(500).json({ error: error.message });
                 }
             }
-        );
-        
-        res.json({ sessionId: session.id, orderId });
+        });
     } catch (error) {
-        console.error('Stripe error:', error);
+        console.error('Error:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -248,28 +366,52 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
         const session = event.data.object;
         const orderId = session.metadata.order_id;
         
-        // Update order status
-        db.run(
-            `UPDATE orders SET status = 'paid', stripe_payment_intent_id = ?, updated_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
-            [session.payment_intent, orderId],
-            (err) => {
-                if (err) {
-                    console.error('Database update error:', err);
-                } else {
-                    // Send confirmation email to customer
-                    db.get(`SELECT * FROM orders WHERE order_id = ?`, [orderId], (err, order) => {
-                        if (!err && order) {
-                            sendEmail(
-                                order.customer_email,
-                                'Order Confirmation - MindChat',
-                                `
-                                <h2>Thank you for your order!</h2>
-                                <p>Your order #${order.order_id} has been confirmed.</p>
-                                <p><strong>Total:</strong> $${order.total_amount.toFixed(2)}</p>
-                                <p>We'll send you tracking information once your order ships.</p>
-                                <p>Track your order: <a href="${process.env.FRONTEND_URL}/order-tracking.html">Click here</a></p>
-                                `
-                            );
+        // Update order status and deduct stock
+        db.get(`SELECT * FROM orders WHERE order_id = ?`, [orderId], (err, order) => {
+            if (err || !order) {
+                console.error('Order not found:', orderId);
+                return;
+            }
+            
+            // Deduct stock
+            const productId = order.product_name.includes('Muse 2') ? 'muse2' : order.product_name.toLowerCase().replace(/\s+/g, '');
+            db.run(
+                `UPDATE stock SET 
+                 stock_quantity = stock_quantity - ?,
+                 reserved_quantity = reserved_quantity - ?,
+                 updated_at = CURRENT_TIMESTAMP
+                 WHERE product_id = ?`,
+                [order.quantity, order.quantity, productId],
+                (err) => {
+                    if (err) {
+                        console.error('Error deducting stock:', err);
+                    }
+                }
+            );
+            
+            // Update order status
+            db.run(
+                `UPDATE orders SET status = 'paid', stripe_payment_intent_id = ?, updated_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
+                [session.payment_intent, orderId],
+                (err) => {
+                    if (err) {
+                        console.error('Database update error:', err);
+                    } else {
+                        // Send confirmation email to customer
+                        const emailContent = `
+                            <h2>Thank you for your order!</h2>
+                            <p>Your order #${order.order_id} has been confirmed.</p>
+                            <p><strong>Subtotal:</strong> $${order.total_amount.toFixed(2)}</p>
+                            ${order.discount_amount > 0 ? `<p><strong>Discount (${order.coupon_code || 'Coupon'}):</strong> -$${order.discount_amount.toFixed(2)}</p>` : ''}
+                            <p><strong>Total:</strong> $${(order.final_amount || order.total_amount).toFixed(2)}</p>
+                            <p>We'll send you tracking information once your order ships.</p>
+                            <p>Track your order: <a href="${process.env.FRONTEND_URL}/order-tracking.html">Click here</a></p>
+                        `;
+                        sendEmail(
+                            order.customer_email,
+                            'Order Confirmation - MindChat',
+                            emailContent
+                        );
                             
                             // Send notification email to admin
                             if (process.env.ADMIN_EMAIL) {
@@ -364,7 +506,22 @@ app.post('/api/orders/:orderId/cancel', async (req, res) => {
                     payment_intent: order.stripe_payment_intent_id,
                 });
                 
-                // Update order status
+                // Release stock and update order status
+                const productId = order.product_name.includes('Muse 2') ? 'muse2' : order.product_name.toLowerCase().replace(/\s+/g, '');
+                db.run(
+                    `UPDATE stock SET 
+                     stock_quantity = stock_quantity + ?,
+                     reserved_quantity = reserved_quantity - ?,
+                     updated_at = CURRENT_TIMESTAMP
+                     WHERE product_id = ?`,
+                    [order.quantity, order.quantity, productId],
+                    (err) => {
+                        if (err) {
+                            console.error('Error releasing stock:', err);
+                        }
+                    }
+                );
+                
                 db.run(
                     `UPDATE orders SET status = 'refunded', updated_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
                     [orderId],
@@ -392,7 +549,19 @@ app.post('/api/orders/:orderId/cancel', async (req, res) => {
                 return res.status(500).json({ error: 'Failed to process refund' });
             }
         } else {
-            // Just cancel if no payment
+            // Just cancel if no payment - release reserved stock
+            const productId = order.product_name.includes('Muse 2') ? 'muse2' : order.product_name.toLowerCase().replace(/\s+/g, '');
+            
+            db.run(
+                `UPDATE stock SET reserved_quantity = reserved_quantity - ? WHERE product_id = ?`,
+                [order.quantity, productId],
+                (err) => {
+                    if (err) {
+                        console.error('Error releasing stock:', err);
+                    }
+                }
+            );
+            
             db.run(
                 `UPDATE orders SET status = 'cancelled', updated_at = CURRENT_TIMESTAMP WHERE order_id = ?`,
                 [orderId],
@@ -662,6 +831,248 @@ app.post('/api/admin/orders/:orderId/refund', authenticateToken, async (req, res
             
             res.status(500).json({ error: errorMessage });
         }
+    });
+});
+
+// ==================== COUPON MANAGEMENT ====================
+
+// Get all coupons
+app.get('/api/admin/coupons', authenticateToken, (req, res) => {
+    db.all('SELECT * FROM coupons ORDER BY created_at DESC', (err, coupons) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ coupons });
+    });
+});
+
+// Get coupon by code
+app.get('/api/admin/coupons/:code', authenticateToken, (req, res) => {
+    const { code } = req.params;
+    db.get('SELECT * FROM coupons WHERE code = ?', [code], (err, coupon) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (!coupon) {
+            return res.status(404).json({ error: 'Coupon not found' });
+        }
+        res.json({ coupon });
+    });
+});
+
+// Create coupon
+app.post('/api/admin/coupons', authenticateToken, (req, res) => {
+    const { code, discount_type, discount_value, min_purchase, max_discount, valid_from, valid_to, usage_limit, active } = req.body;
+    
+    if (!code || !discount_type || !discount_value || !valid_from || !valid_to) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    db.run(
+        `INSERT INTO coupons (code, discount_type, discount_value, min_purchase, max_discount, valid_from, valid_to, usage_limit, active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [code.toUpperCase(), discount_type, discount_value, min_purchase || 0, max_discount, valid_from, valid_to, usage_limit, active !== undefined ? active : 1],
+        function(err) {
+            if (err) {
+                if (err.message.includes('UNIQUE')) {
+                    return res.status(400).json({ error: 'Coupon code already exists' });
+                }
+                return res.status(500).json({ error: 'Database error' });
+            }
+            res.json({ success: true, id: this.lastID });
+        }
+    );
+});
+
+// Update coupon
+app.put('/api/admin/coupons/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    const { code, discount_type, discount_value, min_purchase, max_discount, valid_from, valid_to, usage_limit, active } = req.body;
+    
+    db.run(
+        `UPDATE coupons SET 
+         code = ?, discount_type = ?, discount_value = ?, min_purchase = ?, max_discount = ?,
+         valid_from = ?, valid_to = ?, usage_limit = ?, active = ?, updated_at = CURRENT_TIMESTAMP
+         WHERE id = ?`,
+        [code.toUpperCase(), discount_type, discount_value, min_purchase || 0, max_discount, valid_from, valid_to, usage_limit, active, id],
+        function(err) {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'Coupon not found' });
+            }
+            res.json({ success: true });
+        }
+    );
+});
+
+// Delete coupon
+app.delete('/api/admin/coupons/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    db.run('DELETE FROM coupons WHERE id = ?', [id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Coupon not found' });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Get coupon metrics
+app.get('/api/admin/coupons/:code/metrics', authenticateToken, (req, res) => {
+    const { code } = req.params;
+    
+    db.get('SELECT * FROM coupons WHERE code = ?', [code], (err, coupon) => {
+        if (err || !coupon) {
+            return res.status(404).json({ error: 'Coupon not found' });
+        }
+        
+        db.all(
+            `SELECT COUNT(*) as total_orders, 
+                    SUM(discount_amount) as total_discount,
+                    SUM(final_amount) as total_revenue
+             FROM orders WHERE coupon_code = ? AND status != 'cancelled'`,
+            [code],
+            (err, stats) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Database error' });
+                }
+                res.json({
+                    coupon,
+                    metrics: {
+                        total_orders: stats[0]?.total_orders || 0,
+                        total_discount: stats[0]?.total_discount || 0,
+                        total_revenue: stats[0]?.total_revenue || 0,
+                        usage_count: coupon.used_count,
+                        usage_limit: coupon.usage_limit
+                    }
+                });
+            }
+        );
+    });
+});
+
+// Validate coupon (public endpoint for checkout)
+app.post('/api/coupons/validate', (req, res) => {
+    const { code, amount } = req.body;
+    
+    if (!code || !amount) {
+        return res.status(400).json({ error: 'Code and amount required' });
+    }
+    
+    db.get('SELECT * FROM coupons WHERE code = ? AND active = 1', [code.toUpperCase()], (err, coupon) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        if (!coupon) {
+            return res.status(404).json({ error: 'Invalid coupon code' });
+        }
+        
+        const now = new Date();
+        const validFrom = new Date(coupon.valid_from);
+        const validTo = new Date(coupon.valid_to);
+        
+        if (now < validFrom || now > validTo) {
+            return res.status(400).json({ error: 'Coupon has expired or is not yet valid' });
+        }
+        
+        if (coupon.usage_limit && coupon.used_count >= coupon.usage_limit) {
+            return res.status(400).json({ error: 'Coupon usage limit reached' });
+        }
+        
+        if (amount < coupon.min_purchase) {
+            return res.status(400).json({ error: `Minimum purchase of $${coupon.min_purchase} required` });
+        }
+        
+        let discount = 0;
+        if (coupon.discount_type === 'percentage') {
+            discount = (amount * coupon.discount_value) / 100;
+            if (coupon.max_discount && discount > coupon.max_discount) {
+                discount = coupon.max_discount;
+            }
+        } else {
+            discount = coupon.discount_value;
+        }
+        
+        res.json({
+            valid: true,
+            discount: parseFloat(discount.toFixed(2)),
+            final_amount: parseFloat((amount - discount).toFixed(2))
+        });
+    });
+});
+
+// ==================== STOCK MANAGEMENT ====================
+
+// Get stock
+app.get('/api/admin/stock', authenticateToken, (req, res) => {
+    db.all('SELECT * FROM stock ORDER BY product_name', (err, stock) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ stock });
+    });
+});
+
+// Update stock
+app.put('/api/admin/stock/:productId', authenticateToken, (req, res) => {
+    const { productId } = req.params;
+    const { stock_quantity } = req.body;
+    
+    if (stock_quantity === undefined || stock_quantity < 0) {
+        return res.status(400).json({ error: 'Valid stock quantity required' });
+    }
+    
+    // Check current stock to ensure we don't set below reserved
+    db.get('SELECT * FROM stock WHERE product_id = ?', [productId], (err, currentStock) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (!currentStock) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        
+        if (stock_quantity < currentStock.reserved_quantity) {
+            return res.status(400).json({ 
+                error: `Stock cannot be set below reserved quantity (${currentStock.reserved_quantity} units reserved)` 
+            });
+        }
+        
+        db.run(
+            'UPDATE stock SET stock_quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE product_id = ?',
+            [stock_quantity, productId],
+            function(err) {
+                if (err) {
+                    return res.status(500).json({ error: 'Database error' });
+                }
+                if (this.changes === 0) {
+                    return res.status(404).json({ error: 'Product not found' });
+                }
+                res.json({ success: true });
+            }
+        );
+    });
+});
+
+// Check stock availability (public endpoint)
+app.get('/api/stock/:productId', (req, res) => {
+    const { productId } = req.params;
+    db.get('SELECT * FROM stock WHERE product_id = ?', [productId], (err, stock) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (!stock) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.json({
+            available: stock.stock_quantity - stock.reserved_quantity,
+            total: stock.stock_quantity,
+            reserved: stock.reserved_quantity
+        });
     });
 });
 

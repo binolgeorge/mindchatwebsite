@@ -316,6 +316,19 @@
                     <input type="text" id="zipcode" name="zipcode" class="form-control" pattern="[0-9]{5}" required>
                 </div>
                 
+                <!-- Coupon Code Section -->
+                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0, 0, 0, 0.1);">
+                    <label class="form-label" for="couponCode">Coupon Code (Optional)</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="couponCode" name="couponCode" class="form-control" placeholder="Enter coupon code" style="text-transform: uppercase;">
+                        <button type="button" class="btn btn-secondary" id="applyCouponBtn" onclick="applyCoupon()">Apply</button>
+                    </div>
+                    <div id="couponMessage" style="margin-top: 0.5rem; font-size: 0.875rem; display: none;"></div>
+                </div>
+                
+                <!-- Stock Availability Message -->
+                <div id="stockMessage" style="margin-bottom: 1rem; padding: 1rem; border-radius: var(--border-radius-sm); display: none;"></div>
+                
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;" id="checkoutBtn">
                     Proceed to Payment
                 </button>
@@ -360,18 +373,99 @@
         let currentQuantity = parseInt(urlParams.get('quantity')) || 1;
         document.getElementById('quantityInput').value = currentQuantity;
         
+        let appliedCoupon = null;
+        let discountAmount = 0;
+        const API_BASE = 'http://localhost:3001/api';
+        
+        // Check stock availability
+        async function checkStock() {
+            try {
+                const response = await fetch(`${API_BASE}/stock/${productId}`);
+                const data = await response.json();
+                
+                const stockMessage = document.getElementById('stockMessage');
+                if (data.available < currentQuantity) {
+                    stockMessage.style.display = 'block';
+                    stockMessage.style.background = '#fee';
+                    stockMessage.style.color = '#c33';
+                    stockMessage.innerHTML = `⚠️ Only ${data.available} units available. Please reduce quantity.`;
+                    document.getElementById('checkoutBtn').disabled = true;
+                } else if (data.available < 10) {
+                    stockMessage.style.display = 'block';
+                    stockMessage.style.background = '#fef3c7';
+                    stockMessage.style.color = '#92400e';
+                    stockMessage.innerHTML = `⚠️ Low stock: Only ${data.available} units remaining!`;
+                    document.getElementById('checkoutBtn').disabled = false;
+                } else {
+                    stockMessage.style.display = 'none';
+                    document.getElementById('checkoutBtn').disabled = false;
+                }
+            } catch (err) {
+                console.error('Error checking stock:', err);
+            }
+        }
+        
+        // Apply coupon code
+        async function applyCoupon() {
+            const couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
+            const couponMessage = document.getElementById('couponMessage');
+            
+            if (!couponCode) {
+                couponMessage.style.display = 'block';
+                couponMessage.style.color = '#c33';
+                couponMessage.textContent = 'Please enter a coupon code';
+                return;
+            }
+            
+            try {
+                const subtotal = product.price * currentQuantity;
+                const shipping = 15.00;
+                const tax = subtotal * 0.08;
+                const totalBeforeDiscount = subtotal + shipping + tax;
+                
+                const response = await fetch(`${API_BASE}/coupons/validate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: couponCode, amount: totalBeforeDiscount })
+                });
+                
+                const data = await response.json();
+                
+                if (data.valid) {
+                    appliedCoupon = couponCode;
+                    discountAmount = data.discount;
+                    couponMessage.style.display = 'block';
+                    couponMessage.style.color = '#065f46';
+                    couponMessage.innerHTML = `✅ Coupon applied! You saved $${discountAmount.toFixed(2)}`;
+                    updatePrices();
+                } else {
+                    appliedCoupon = null;
+                    discountAmount = 0;
+                    couponMessage.style.display = 'block';
+                    couponMessage.style.color = '#c33';
+                    couponMessage.textContent = data.error || 'Invalid coupon code';
+                    updatePrices();
+                }
+            } catch (err) {
+                couponMessage.style.display = 'block';
+                couponMessage.style.color = '#c33';
+                couponMessage.textContent = 'Error validating coupon. Please try again.';
+            }
+        }
+        
         // Function to calculate and update prices
         function updatePrices() {
             const subtotal = product.price * currentQuantity;
             const shipping = 15.00; // Flat rate shipping
             const tax = subtotal * 0.08; // 8% tax (adjust based on state)
-            const total = subtotal + shipping + tax;
+            const totalBeforeDiscount = subtotal + shipping + tax;
+            const finalTotal = totalBeforeDiscount - discountAmount;
             
             // Update product preview price
             document.getElementById('previewPrice').textContent = `$${(product.price * currentQuantity).toFixed(2)}`;
             
             // Update order summary
-            document.getElementById('orderSummary').innerHTML = `
+            let summaryHTML = `
                 <div class="product-item">
                     <div>
                         <strong>${product.name}</strong>
@@ -393,13 +487,37 @@
                 </div>
             `;
             
+            if (discountAmount > 0) {
+                summaryHTML += `
+                    <div class="product-item" style="color: var(--success);">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                            Discount (${appliedCoupon})
+                        </span>
+                        <span>-$${discountAmount.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('orderSummary').innerHTML = summaryHTML;
+            
             // Update total
-            document.getElementById('orderTotal').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('orderTotal').textContent = `$${finalTotal.toFixed(2)}`;
             
             // Update URL without reload
             const newUrl = new URL(window.location);
             newUrl.searchParams.set('quantity', currentQuantity);
+            if (appliedCoupon) {
+                newUrl.searchParams.set('coupon', appliedCoupon);
+            } else {
+                newUrl.searchParams.delete('coupon');
+            }
             window.history.replaceState({}, '', newUrl);
+            
+            // Check stock
+            checkStock();
         }
         
         // Quantity control buttons
@@ -432,7 +550,14 @@
             updatePrices();
         });
         
-        // Initial price update
+        // Check for coupon in URL
+        const urlCoupon = urlParams.get('coupon');
+        if (urlCoupon) {
+            document.getElementById('couponCode').value = urlCoupon;
+            applyCoupon();
+        }
+        
+        // Initial price update and stock check
         updatePrices();
         
         // Handle form submission
@@ -453,7 +578,8 @@
                 const finalSubtotal = product.price * finalQuantity;
                 const finalShipping = 15.00;
                 const finalTax = finalSubtotal * 0.08;
-                const finalTotal = finalSubtotal + finalShipping + finalTax;
+                const finalTotalBeforeDiscount = finalSubtotal + finalShipping + finalTax;
+                const finalTotal = finalTotalBeforeDiscount - discountAmount;
                 
                 // Collect form data
                 const formData = {
@@ -466,11 +592,11 @@
                     zipcode: document.getElementById('zipcode').value,
                     product: productId,
                     quantity: finalQuantity,
-                    total: finalTotal
+                    total: finalTotalBeforeDiscount,
+                    coupon_code: appliedCoupon || null
                 };
                 
                 // Call backend to create checkout session
-                const API_BASE = 'http://localhost:3001/api';
                 const response = await fetch(`${API_BASE}/create-checkout-session`, {
                     method: 'POST',
                     headers: {
