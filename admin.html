@@ -28,6 +28,157 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
         }
 
+        /* Login Overlay Styles */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            width: 100%;
+            max-width: 420px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header svg {
+            margin-bottom: 1rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--admin-text);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .login-header p {
+            color: var(--admin-text-light);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .login-form {
+            margin-bottom: 1.5rem;
+        }
+
+        .login-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .login-form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--admin-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--admin-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .login-form-group input:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .login-error {
+            background: #fee;
+            color: #c33;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            border: 1px solid #fcc;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn:hover {
+            background: var(--admin-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-loader {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-footer {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--admin-border);
+        }
+
         .admin-container {
             max-width: 1600px;
             margin: 0 auto;
@@ -506,6 +657,60 @@
     </style>
 </head>
 <body>
+    <!-- LOGIN OVERLAY -->
+    <div id="loginOverlay" class="login-overlay" style="display: flex;">
+        <div class="login-container">
+            <div class="login-header">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--admin-primary);">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <h2>Admin Login</h2>
+                <p>Sign in to access the admin panel</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="login-form-group">
+                    <label for="loginUsername">Username</label>
+                    <input 
+                        type="text" 
+                        id="loginUsername" 
+                        name="username" 
+                        required 
+                        autocomplete="username"
+                        placeholder="Enter username"
+                    >
+                </div>
+                <div class="login-form-group">
+                    <label for="loginPassword">Password</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        name="password" 
+                        required 
+                        autocomplete="current-password"
+                        placeholder="Enter password"
+                    >
+                </div>
+                <div id="loginError" class="login-error" style="display: none;"></div>
+                <button type="submit" class="login-btn">
+                    <span id="loginBtnText">Sign In</span>
+                    <span id="loginBtnLoader" class="login-loader" style="display: none;"></span>
+                </button>
+            </form>
+            <div class="login-footer">
+                <p style="font-size: 0.875rem; color: var(--admin-text-light);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    Session expires after 24 hours
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN PANEL (Hidden until logged in) -->
+    <div id="adminPanel" style="display: none;">
     <!-- HEADER -->
     <header class="navbar">
         <div class="navbar-container container">
@@ -516,6 +721,16 @@
             <ul class="nav-links">
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="admin.html" class="nav-link">Admin</a></li>
+                <li class="nav-item">
+                    <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; color: inherit; font: inherit; padding: 0;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </button>
+                </li>
             </ul>
         </div>
     </header>
@@ -770,6 +985,158 @@
         let currentOrderId = null;
         let currentTab = 'all';
         let allOrders = [];
+        let authToken = null;
+
+        // Authentication functions
+        function getAuthToken() {
+            return localStorage.getItem('admin_token');
+        }
+
+        function setAuthToken(token) {
+            localStorage.setItem('admin_token', token);
+            authToken = token;
+        }
+
+        function clearAuthToken() {
+            localStorage.removeItem('admin_token');
+            authToken = null;
+        }
+
+        function showLogin() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        function hideLogin() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideLoginError() {
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideLoginError();
+
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const submitBtn = document.querySelector('.login-btn');
+            const btnText = document.getElementById('loginBtnText');
+            const btnLoader = document.getElementById('loginBtnLoader');
+
+            // Disable form
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Save token
+                    setAuthToken(data.token);
+                    
+                    // Hide login, show admin panel
+                    hideLogin();
+                    
+                    // Load orders
+                    loadOrders();
+                } else {
+                    showLoginError(data.error || 'Invalid username or password');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showLoginError('Failed to connect to server. Please try again.');
+            } finally {
+                // Re-enable form
+                submitBtn.disabled = false;
+                btnText.style.display = 'block';
+                btnLoader.style.display = 'none';
+            }
+        });
+
+        // Verify token on page load
+        async function verifyToken() {
+            const token = getAuthToken();
+            
+            if (!token) {
+                showLogin();
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    authToken = token;
+                    hideLogin();
+                    return true;
+                } else {
+                    clearAuthToken();
+                    showLogin();
+                    return false;
+                }
+            } catch (error) {
+                console.error('Token verification failed:', error);
+                clearAuthToken();
+                showLogin();
+                return false;
+            }
+        }
+
+        // Add logout functionality
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                clearAuthToken();
+                showLogin();
+            }
+        }
+
+        // Modified fetch function to include auth token
+        async function authenticatedFetch(url, options = {}) {
+            const token = getAuthToken();
+            if (!token) {
+                showLogin();
+                throw new Error('No authentication token');
+            }
+
+            const headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`
+            };
+
+            const response = await fetch(url, { ...options, headers });
+
+            // If 401 or 403, token is invalid
+            if (response.status === 401 || response.status === 403) {
+                clearAuthToken();
+                showLogin();
+                throw new Error('Authentication failed');
+            }
+
+            return response;
+        }
 
         function switchTab(tab) {
             currentTab = tab;
@@ -915,7 +1282,7 @@
             
             const queryString = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
             
-            fetch(`${API_BASE}/admin/orders${queryString}`)
+            authenticatedFetch(`${API_BASE}/admin/orders${queryString}`)
                 .then(res => res.json())
                 .then(data => {
                     allOrders = data.orders || [];
@@ -943,7 +1310,7 @@
         function viewOrderDetails(orderId) {
             currentOrderId = orderId;
             
-            fetch(`${API_BASE}/admin/orders/${orderId}`)
+            authenticatedFetch(`${API_BASE}/admin/orders/${orderId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) {
@@ -1043,7 +1410,7 @@
             const trackingNumber = document.getElementById('trackingNumber').value;
             
             try {
-                const response = await fetch(`${API_BASE}/admin/orders/${currentOrderId}/status`, {
+                const response = await authenticatedFetch(`${API_BASE}/admin/orders/${currentOrderId}/status`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1070,7 +1437,7 @@
 
         function openRefundModal(orderId) {
             // Fetch order details first
-            fetch(`${API_BASE}/admin/orders/${orderId}`)
+            authenticatedFetch(`${API_BASE}/admin/orders/${orderId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) {
@@ -1212,7 +1579,7 @@
             submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing...';
             
             try {
-                const response = await fetch(`${API_BASE}/admin/orders/${refundOrderData.order_id}/refund`, {
+                const response = await authenticatedFetch(`${API_BASE}/admin/orders/${refundOrderData.order_id}/refund`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1258,7 +1625,7 @@
             btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Seeding...';
             
             try {
-                const response = await fetch(`${API_BASE}/admin/seed-orders`, {
+                const response = await authenticatedFetch(`${API_BASE}/admin/seed-orders`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1282,16 +1649,29 @@
             }
         }
 
-        // Load orders on page load
-        loadOrders();
+        // Initialize authentication and load orders
+        async function init() {
+            // Verify token first
+            const isAuthenticated = await verifyToken();
+            
+            if (isAuthenticated) {
+                // Load orders if authenticated
+                loadOrders();
+                
+                // Refresh every 30 seconds
+                setInterval(loadOrders, 30000);
+                
+                // Set default date to today for "Date To"
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('dateTo').value = today;
+            }
+        }
         
-        // Refresh every 30 seconds
-        setInterval(loadOrders, 30000);
-        
-        // Set default date to today for "Date To"
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('dateTo').value = today;
+        // Run initialization
+        init();
     </script>
+    </div>
+    <!-- End of adminPanel -->
 </body>
 </html>
 

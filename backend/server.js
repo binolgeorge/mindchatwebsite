@@ -8,14 +8,91 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Rate limiting for login attempts
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 attempts
+    message: 'Too many login attempts, please try again after 15 minutes'
+});
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// JWT Secret
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_this_in_production';
+const JWT_EXPIRY = process.env.SESSION_TIMEOUT || '24h';
+
+// Admin credentials (in production, use database with hashed passwords)
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'MindChat2025!Secure#Admin';
+
+// Authentication middleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Access denied. No token provided.' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid or expired token.' });
+        }
+        req.user = user;
+        next();
+    });
+}
+
+// Admin login endpoint
+app.post('/api/admin/login', loginLimiter, async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required' });
+        }
+
+        // Validate credentials
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+            // Generate JWT token
+            const token = jwt.sign(
+                { username: username, role: 'admin' },
+                JWT_SECRET,
+                { expiresIn: JWT_EXPIRY }
+            );
+
+            res.json({
+                success: true,
+                token: token,
+                expiresIn: JWT_EXPIRY,
+                user: {
+                    username: username,
+                    role: 'admin'
+                }
+            });
+        } else {
+            res.status(401).json({ error: 'Invalid username or password' });
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+// Token validation endpoint
+app.get('/api/admin/verify', authenticateToken, (req, res) => {
+    res.json({ valid: true, user: req.user });
+});
 
 // Initialize database
 const dbPath = path.join(__dirname, 'database.sqlite');
@@ -338,7 +415,7 @@ app.post('/api/orders/:orderId/cancel', async (req, res) => {
 });
 
 // Admin: Get all orders
-app.get('/api/admin/orders', (req, res) => {
+app.get('/api/admin/orders', authenticateToken, (req, res) => {
     const { status, limit = 1000, dateFrom, dateTo } = req.query;
     
     let query = 'SELECT * FROM orders WHERE 1=1';
@@ -376,7 +453,7 @@ app.get('/api/admin/orders', (req, res) => {
 });
 
 // Admin: Get single order by ID
-app.get('/api/admin/orders/:orderId', (req, res) => {
+app.get('/api/admin/orders/:orderId', authenticateToken, (req, res) => {
     const { orderId } = req.params;
     
     db.get(
@@ -397,7 +474,7 @@ app.get('/api/admin/orders/:orderId', (req, res) => {
 });
 
 // Admin: Update order status
-app.post('/api/admin/orders/:orderId/status', (req, res) => {
+app.post('/api/admin/orders/:orderId/status', authenticateToken, (req, res) => {
     const { orderId } = req.params;
     const { status, trackingNumber } = req.body;
     
@@ -440,7 +517,7 @@ app.post('/api/admin/orders/:orderId/status', (req, res) => {
 });
 
 // Admin: Process refund
-app.post('/api/admin/orders/:orderId/refund', async (req, res) => {
+app.post('/api/admin/orders/:orderId/refund', authenticateToken, async (req, res) => {
     const { orderId } = req.params;
     const { amount, reason, notes } = req.body;
     
@@ -594,7 +671,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Seed dummy data endpoint (for development/testing)
-app.post('/api/admin/seed-orders', (req, res) => {
+app.post('/api/admin/seed-orders', authenticateToken, (req, res) => {
     const { count = 200 } = req.body;
     
     const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily', 'James', 'Emma', 'Robert', 'Olivia', 'William', 'Sophia', 'Richard', 'Isabella', 'Joseph', 'Ava', 'Thomas', 'Mia', 'Charles', 'Charlotte'];
