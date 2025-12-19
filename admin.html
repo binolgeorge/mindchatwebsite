@@ -1721,10 +1721,32 @@
 
         function switchSettingsTab(tab) {
             currentSettingsTab = tab;
-            document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`settings-tab-${tab}`).classList.add('active');
-            document.querySelectorAll('.settings-tab-content').forEach(content => content.style.display = 'none');
-            document.getElementById(`settings-content-${tab}`).style.display = 'block';
+            
+            // Update all tab buttons - remove active state
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.borderBottom = '3px solid transparent';
+                btn.style.color = 'var(--admin-text-light)';
+            });
+            
+            // Set active tab button styles
+            const activeBtn = document.getElementById(`settings-tab-${tab}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.style.borderBottom = '3px solid var(--admin-primary)';
+                activeBtn.style.color = 'var(--admin-primary)';
+            }
+            
+            // Hide all tab contents
+            document.querySelectorAll('.settings-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // Show selected tab content
+            const activeContent = document.getElementById(`settings-content-${tab}`);
+            if (activeContent) {
+                activeContent.style.display = 'block';
+            }
         }
 
         // Coupon Management
@@ -1851,43 +1873,66 @@
             document.getElementById('couponModal').classList.add('show');
         }
 
-        document.getElementById('couponForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = {
-                code: formData.get('code'),
-                discount_type: formData.get('discount_type'),
-                discount_value: parseFloat(formData.get('discount_value')),
-                min_purchase: parseFloat(formData.get('min_purchase')) || 0,
-                max_discount: formData.get('max_discount') ? parseFloat(formData.get('max_discount')) : null,
-                valid_from: formData.get('valid_from') + 'T00:00:00',
-                valid_to: formData.get('valid_to') + 'T23:59:59',
-                usage_limit: formData.get('usage_limit') ? parseInt(formData.get('usage_limit')) : null,
-                active: formData.get('active') ? 1 : 0
-            };
-
-            const id = formData.get('id');
-            const url = id ? `${API_BASE}/admin/coupons/${id}` : `${API_BASE}/admin/coupons`;
-            const method = id ? 'PUT' : 'POST';
-
-            try {
-                const response = await authenticatedFetch(url, {
-                    method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
+        // Setup coupon form event listener (when form exists)
+        function setupCouponForm() {
+            const couponForm = document.getElementById('couponForm');
+            if (couponForm) {
+                // Remove existing listener if any
+                const newForm = couponForm.cloneNode(true);
+                couponForm.parentNode.replaceChild(newForm, couponForm);
                 
-                if (response.ok) {
-                    document.getElementById('couponModal').classList.remove('show');
-                    loadCoupons();
-                } else {
-                    const error = await response.json();
-                    alert(error.error || 'Error saving coupon');
-                }
-            } catch (err) {
-                alert('Error saving coupon');
+                newForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const data = {
+                        code: formData.get('code'),
+                        discount_type: formData.get('discount_type'),
+                        discount_value: parseFloat(formData.get('discount_value')),
+                        min_purchase: parseFloat(formData.get('min_purchase')) || 0,
+                        max_discount: formData.get('max_discount') ? parseFloat(formData.get('max_discount')) : null,
+                        valid_from: formData.get('valid_from') + 'T00:00:00',
+                        valid_to: formData.get('valid_to') + 'T23:59:59',
+                        usage_limit: formData.get('usage_limit') ? parseInt(formData.get('usage_limit')) : null,
+                        active: formData.get('active') ? 1 : 0
+                    };
+
+                    const id = formData.get('id');
+                    const url = id ? `${API_BASE}/admin/coupons/${id}` : `${API_BASE}/admin/coupons`;
+                    const method = id ? 'PUT' : 'POST';
+
+                    try {
+                        const response = await authenticatedFetch(url, {
+                            method,
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        
+                        if (response.ok) {
+                            document.getElementById('couponModal').classList.remove('show');
+                            loadCoupons();
+                        } else {
+                            const error = await response.json();
+                            alert(error.error || 'Error saving coupon');
+                        }
+                    } catch (err) {
+                        alert('Error saving coupon');
+                    }
+                });
             }
-        });
+        }
+        
+        // Setup form when modal is shown
+        const originalShowNewCouponForm = showNewCouponForm;
+        showNewCouponForm = function() {
+            originalShowNewCouponForm();
+            setTimeout(setupCouponForm, 100);
+        };
+        
+        const originalEditCoupon = editCoupon;
+        editCoupon = function(id) {
+            originalEditCoupon(id);
+            setTimeout(setupCouponForm, 100);
+        };
 
         // Stock Management
         async function loadStock() {
@@ -1911,10 +1956,13 @@
             container.innerHTML = stock.map(item => {
                 const available = item.stock_quantity - item.reserved_quantity;
                 const isLowStock = available < 10;
+                const price = parseFloat(item.price || 249.00).toFixed(2);
+                const taxRate = parseFloat(item.tax_rate || 0.08) * 100;
+                const shippingCost = parseFloat(item.shipping_cost || 15.00).toFixed(2);
                 
                 return `
-                    <div class="stock-card" style="background: white; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div class="stock-card" style="background: white; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
                             <div>
                                 <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--admin-text);">${item.product_name}</h3>
                                 <p style="margin: 0.5rem 0 0 0; color: var(--admin-text-light); font-size: 0.875rem;">Product ID: ${item.product_id}</p>
@@ -1923,54 +1971,152 @@
                                 ${isLowStock ? 'Low Stock' : 'In Stock'}
                             </span>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Total Stock</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--admin-text);">${item.stock_quantity}</div>
+                        
+                        <!-- Stock Information -->
+                        <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--admin-border);">
+                            <h4 style="margin: 0 0 1rem 0; font-size: 1rem; font-weight: 600; color: var(--admin-text);">Stock Information</h4>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                                <div>
+                                    <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Total Stock</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--admin-text);">${item.stock_quantity}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Reserved</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--admin-warning);">${item.reserved_quantity}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Available</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--admin-success);">${available}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Reserved</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--admin-warning);">${item.reserved_quantity}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.875rem; color: var(--admin-text-light); margin-bottom: 0.25rem;">Available</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--admin-success);">${available}</div>
+                            <div style="margin-top: 1rem;">
+                                <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--admin-text); margin-bottom: 0.5rem;">Update Stock Quantity</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="number" id="stockInput_${item.product_id}" value="${item.stock_quantity}" min="0" 
+                                           class="form-control" style="flex: 1;" placeholder="Stock quantity">
+                                    <button onclick="updateStockField('${item.product_id}', 'stock_quantity')" class="btn btn-secondary">Update</button>
+                                </div>
                             </div>
                         </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <input type="number" id="stockInput_${item.product_id}" value="${item.stock_quantity}" min="0" 
-                                   class="form-control" style="flex: 1;" placeholder="New stock quantity">
-                            <button onclick="updateStock('${item.product_id}')" class="btn btn-primary">Update Stock</button>
+                        
+                        <!-- Pricing Information -->
+                        <div>
+                            <h4 style="margin: 0 0 1rem 0; font-size: 1rem; font-weight: 600; color: var(--admin-text);">Pricing & Costs</h4>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                                <div>
+                                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--admin-text); margin-bottom: 0.5rem;">Product Price ($)</label>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <input type="number" id="priceInput_${item.product_id}" value="${price}" step="0.01" min="0" 
+                                               class="form-control" placeholder="0.00">
+                                        <button onclick="updateStockField('${item.product_id}', 'price')" class="btn btn-secondary">Update</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--admin-text); margin-bottom: 0.5rem;">Tax Rate (%)</label>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <input type="number" id="taxRateInput_${item.product_id}" value="${taxRate}" step="0.1" min="0" max="100" 
+                                               class="form-control" placeholder="8.0">
+                                        <button onclick="updateStockField('${item.product_id}', 'tax_rate')" class="btn btn-secondary">Update</button>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--admin-text-light); margin-top: 0.25rem;">Current: ${taxRate}%</div>
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--admin-text); margin-bottom: 0.5rem;">Shipping Cost ($)</label>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <input type="number" id="shippingInput_${item.product_id}" value="${shippingCost}" step="0.01" min="0" 
+                                               class="form-control" placeholder="0.00">
+                                        <button onclick="updateStockField('${item.product_id}', 'shipping_cost')" class="btn btn-secondary">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid var(--admin-border);">
+                                <div style="font-size: 0.875rem; font-weight: 600; color: var(--admin-text); margin-bottom: 0.5rem;">Price Calculation Example (1 unit):</div>
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.875rem;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span style="color: var(--admin-text-light);">Subtotal:</span>
+                                        <span style="font-weight: 600;">$${price}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span style="color: var(--admin-text-light);">Tax (${taxRate}%):</span>
+                                        <span style="font-weight: 600;">$${(parseFloat(price) * parseFloat(item.tax_rate || 0.08)).toFixed(2)}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span style="color: var(--admin-text-light);">Shipping:</span>
+                                        <span style="font-weight: 600;">$${shippingCost}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding-top: 0.5rem; border-top: 1px solid var(--admin-border); margin-top: 0.25rem;">
+                                        <span style="font-weight: 700; color: var(--admin-text);">Total:</span>
+                                        <span style="font-weight: 700; font-size: 1.1rem; color: var(--admin-primary);">$${(parseFloat(price) + (parseFloat(price) * parseFloat(item.tax_rate || 0.08)) + parseFloat(shippingCost)).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        async function updateStock(productId) {
-            const input = document.getElementById(`stockInput_${productId}`);
-            const newQuantity = parseInt(input.value);
+        async function updateStockField(productId, field) {
+            let value;
+            let inputId;
             
-            if (isNaN(newQuantity) || newQuantity < 0) {
-                alert('Please enter a valid stock quantity');
+            if (field === 'stock_quantity') {
+                inputId = `stockInput_${productId}`;
+                value = parseInt(document.getElementById(inputId).value);
+                if (isNaN(value) || value < 0) {
+                    alert('Please enter a valid stock quantity');
+                    return;
+                }
+            } else if (field === 'price') {
+                inputId = `priceInput_${productId}`;
+                value = parseFloat(document.getElementById(inputId).value);
+                if (isNaN(value) || value < 0) {
+                    alert('Please enter a valid price');
+                    return;
+                }
+            } else if (field === 'tax_rate') {
+                inputId = `taxRateInput_${productId}`;
+                value = parseFloat(document.getElementById(inputId).value) / 100; // Convert percentage to decimal
+                if (isNaN(value) || value < 0 || value > 1) {
+                    alert('Please enter a valid tax rate (0-100%)');
+                    return;
+                }
+            } else if (field === 'shipping_cost') {
+                inputId = `shippingInput_${productId}`;
+                value = parseFloat(document.getElementById(inputId).value);
+                if (isNaN(value) || value < 0) {
+                    alert('Please enter a valid shipping cost');
+                    return;
+                }
+            } else {
+                alert('Invalid field');
                 return;
             }
+
+            const updateData = {};
+            updateData[field] = value;
 
             try {
                 const response = await authenticatedFetch(`${API_BASE}/admin/stock/${productId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ stock_quantity: newQuantity })
+                    body: JSON.stringify(updateData)
                 });
                 
                 if (response.ok) {
                     loadStock();
                 } else {
-                    alert('Error updating stock');
+                    const error = await response.json();
+                    alert(error.error || 'Error updating ' + field);
                 }
             } catch (err) {
-                alert('Error updating stock');
+                alert('Error updating ' + field);
             }
+        }
+        
+        // Keep old function for backward compatibility
+        async function updateStock(productId) {
+            await updateStockField(productId, 'stock_quantity');
         }
 
         // Run initialization

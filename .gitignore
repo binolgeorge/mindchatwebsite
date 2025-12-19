@@ -82,3 +82,12 @@ jspm_packages/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Backup files
+*.bak
+*.backup

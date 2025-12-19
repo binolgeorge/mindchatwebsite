@@ -107,7 +107,7 @@ app.get('/api/admin/verify', authenticateToken, (req, res) => {
 const dbPath = path.join(__dirname, 'database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
-// Initialize database tables
+    // Initialize database tables
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS orders (
         order_id TEXT PRIMARY KEY,
@@ -128,6 +128,27 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+    
+    // Migrate existing orders table to add coupon/discount columns if they don't exist
+    db.all("PRAGMA table_info(orders)", (err, columns) => {
+        if (!err && columns.length > 0) {
+            const columnNames = columns.map(col => col.name);
+            if (!columnNames.includes('discount_amount')) {
+                db.run('ALTER TABLE orders ADD COLUMN discount_amount REAL DEFAULT 0');
+            }
+            if (!columnNames.includes('final_amount')) {
+                db.run('ALTER TABLE orders ADD COLUMN final_amount REAL', (err) => {
+                    if (!err) {
+                        // Set final_amount = total_amount for existing orders
+                        db.run(`UPDATE orders SET final_amount = total_amount WHERE final_amount IS NULL`);
+                    }
+                });
+            }
+            if (!columnNames.includes('coupon_code')) {
+                db.run('ALTER TABLE orders ADD COLUMN coupon_code TEXT');
+            }
+        }
+    });
 
     // Coupons table
     db.run(`CREATE TABLE IF NOT EXISTS coupons (
@@ -146,20 +167,108 @@ db.serialize(() => {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Stock table
+    // Stock table (extended with pricing)
     db.run(`CREATE TABLE IF NOT EXISTS stock (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_id TEXT UNIQUE NOT NULL,
         product_name TEXT NOT NULL,
         stock_quantity INTEGER NOT NULL DEFAULT 0,
         reserved_quantity INTEGER DEFAULT 0,
+        price REAL NOT NULL DEFAULT 249.00,
+        tax_rate REAL NOT NULL DEFAULT 0.08,
+        shipping_cost REAL NOT NULL DEFAULT 15.00,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
+    // Migrate existing stock table to add pricing columns if they don't exist
+    db.all("PRAGMA table_info(stock)", (err, columns) => {
+        if (!err && columns.length > 0) {
+            const columnNames = columns.map(col => col.name);
+            let migrationCount = 0;
+            let migrationTotal = 0;
+            
+            if (!columnNames.includes('price')) {
+                migrationTotal++;
+                db.run('ALTER TABLE stock ADD COLUMN price REAL DEFAULT 249.00', (err) => {
+                    if (!err) {
+                        db.run(`UPDATE stock SET price = 249.00 WHERE price IS NULL`, () => {
+                            migrationCount++;
+                            if (migrationCount === migrationTotal) {
+                                initializeStock();
+                            }
+                        });
+                    } else {
+                        migrationCount++;
+                        if (migrationCount === migrationTotal) {
+                            initializeStock();
+                        }
+                    }
+                });
+            } else {
+                migrationTotal++;
+                migrationCount++;
+            }
+            
+            if (!columnNames.includes('tax_rate')) {
+                migrationTotal++;
+                db.run('ALTER TABLE stock ADD COLUMN tax_rate REAL DEFAULT 0.08', (err) => {
+                    if (!err) {
+                        db.run(`UPDATE stock SET tax_rate = 0.08 WHERE tax_rate IS NULL`, () => {
+                            migrationCount++;
+                            if (migrationCount === migrationTotal) {
+                                initializeStock();
+                            }
+                        });
+                    } else {
+                        migrationCount++;
+                        if (migrationCount === migrationTotal) {
+                            initializeStock();
+                        }
+                    }
+                });
+            } else {
+                migrationTotal++;
+                migrationCount++;
+            }
+            
+            if (!columnNames.includes('shipping_cost')) {
+                migrationTotal++;
+                db.run('ALTER TABLE stock ADD COLUMN shipping_cost REAL DEFAULT 15.00', (err) => {
+                    if (!err) {
+                        db.run(`UPDATE stock SET shipping_cost = 15.00 WHERE shipping_cost IS NULL`, () => {
+                            migrationCount++;
+                            if (migrationCount === migrationTotal) {
+                                initializeStock();
+                            }
+                        });
+                    } else {
+                        migrationCount++;
+                        if (migrationCount === migrationTotal) {
+                            initializeStock();
+                        }
+                    }
+                });
+            } else {
+                migrationTotal++;
+                migrationCount++;
+            }
+            
+            // If no migrations needed, initialize immediately
+            if (migrationTotal === 0 || migrationCount === migrationTotal) {
+                initializeStock();
+            }
+        } else {
+            // Table doesn't exist yet, will be created with all columns
+            initializeStock();
+        }
+    });
+    
     // Initialize default stock for Muse 2
-    db.run(`INSERT OR IGNORE INTO stock (product_id, product_name, stock_quantity) 
-            VALUES ('muse2', 'Muse 2 EEG Headset', 100)`);
+    function initializeStock() {
+        db.run(`INSERT OR IGNORE INTO stock (product_id, product_name, stock_quantity, price, tax_rate, shipping_cost) 
+                VALUES ('muse2', 'Muse 2 EEG Headset', 100, 249.00, 0.08, 15.00)`);
+    }
 });
 
 // Email transporter (configure with your email service)
@@ -186,9 +295,22 @@ function sendEmail(to, subject, html) {
     });
 }
 
-// Generate order ID
+// Generate standardized order ID
+// Format: MC-YYYYMMDD-XXXX
+// Example: MC-20250115-A7B9
 function generateOrderId() {
-    return 'ORD-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 5).toUpperCase();
+    const now = new Date();
+    
+    // Date components (YYYYMMDD)
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const dateStr = `${year}${month}${day}`;
+    
+    // Random 4-character alphanumeric code (uppercase)
+    const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase().padEnd(4, '0');
+    
+    return `MC-${dateStr}-${randomCode}`;
 }
 
 // Create Stripe Checkout Session
@@ -248,6 +370,7 @@ app.post('/api/create-checkout-session', async (req, res) => {
             }
             
             async function createOrder() {
+                let stockReserved = false;
                 try {
                     // Generate order ID
                     const orderId = generateOrderId();
@@ -255,39 +378,61 @@ app.post('/api/create-checkout-session', async (req, res) => {
                     // Reserve stock temporarily
                     db.run(
                         'UPDATE stock SET reserved_quantity = reserved_quantity + ? WHERE product_id = ?',
-                        [quantity, product]
+                        [quantity, product],
+                        (err) => {
+                            if (err) {
+                                console.error('Error reserving stock:', err);
+                            } else {
+                                stockReserved = true;
+                            }
+                        }
                     );
                     
                     // Create Stripe Checkout Session
-                    const session = await stripe.checkout.sessions.create({
-                        payment_method_types: ['card'],
-                        line_items: [{
-                            price_data: {
-                                currency: 'usd',
-                                product_data: {
-                                    name: product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product',
-                                    description: 'MindChat compatible EEG headset',
+                    let session;
+                    try {
+                        session = await stripe.checkout.sessions.create({
+                            payment_method_types: ['card'],
+                            line_items: [{
+                                price_data: {
+                                    currency: 'usd',
+                                    product_data: {
+                                        name: product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product',
+                                        description: 'MindChat compatible EEG headset',
+                                    },
+                                    unit_amount: Math.round(finalAmount * 100), // Convert to cents
                                 },
-                                unit_amount: Math.round(finalAmount * 100), // Convert to cents
-                            },
-                            quantity: quantity,
-                        }],
-                        mode: 'payment',
-                        success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
-                        cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/checkout.html`,
-                        customer_email: email,
-                        metadata: {
-                            order_id: orderId,
-                            customer_name: name,
+                                quantity: quantity,
+                            }],
+                            mode: 'payment',
+                            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+                            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/checkout.html`,
                             customer_email: email,
-                            customer_phone: phone,
-                            shipping_address: `${address}, ${city}, ${state} ${zipcode}`,
-                            product: product,
-                            quantity: quantity.toString(),
-                            coupon_code: validCouponCode || '',
-                            discount_amount: discountAmount.toString()
+                            metadata: {
+                                order_id: orderId,
+                                customer_name: name,
+                                customer_email: email,
+                                customer_phone: phone,
+                                shipping_address: `${address}, ${city}, ${state} ${zipcode}`,
+                                product: product,
+                                quantity: quantity.toString(),
+                                coupon_code: validCouponCode || '',
+                                discount_amount: discountAmount.toString()
+                            }
+                        });
+                    } catch (stripeError) {
+                        console.error('Stripe error:', stripeError);
+                        // Release reserved stock on Stripe error
+                        if (stockReserved) {
+                            db.run('UPDATE stock SET reserved_quantity = reserved_quantity - ? WHERE product_id = ?', [quantity, product]);
                         }
-                    });
+                        if (!res.headersSent) {
+                            return res.status(500).json({ 
+                                error: stripeError.message || 'Payment processing error. Please check Stripe configuration.' 
+                            });
+                        }
+                        return;
+                    }
                     
                     // Save order to database
                     const shippingAddress = `${address}, ${city}, ${state} ${zipcode}`;
@@ -300,10 +445,17 @@ app.post('/api/create-checkout-session', async (req, res) => {
                     db.run(
                         `INSERT INTO orders (order_id, customer_email, customer_name, product_name, quantity, total_amount, discount_amount, final_amount, coupon_code, status, stripe_session_id, shipping_address, items)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
-                        [orderId, email, name, product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product', quantity, total, discountAmount, finalAmount, validCouponCode, session.id, shippingAddress, items],
+                        [orderId, email, name, product === 'muse2' ? 'Muse 2 EEG Headset' : 'EEG Product', quantity, total, discountAmount || 0, finalAmount || total, validCouponCode || null, session.id, shippingAddress, items],
                         (err) => {
                             if (err) {
-                                console.error('Database error:', err);
+                                console.error('Database error inserting order:', err);
+                                // Release reserved stock on database error
+                                if (stockReserved) {
+                                    db.run('UPDATE stock SET reserved_quantity = reserved_quantity - ? WHERE product_id = ?', [quantity, product]);
+                                }
+                                if (!res.headersSent) {
+                                    return res.status(500).json({ error: 'Failed to create order: ' + err.message });
+                                }
                             } else {
                                 // Update coupon usage count if used
                                 if (validCouponCode) {
@@ -330,20 +482,29 @@ app.post('/api/create-checkout-session', async (req, res) => {
                                         `
                                     );
                                 }
+                                
+                                // Send response after order is saved
+                                if (!res.headersSent) {
+                                    res.json({ sessionId: session.id, orderId, discountAmount, finalAmount });
+                                }
                             }
                         }
                     );
-                    
-                    res.json({ sessionId: session.id, orderId, discountAmount, finalAmount });
                 } catch (error) {
-                    console.error('Stripe error:', error);
-                    res.status(500).json({ error: error.message });
+                    console.error('Error creating checkout session:', error);
+                    // Release reserved stock on error
+                    if (stockReserved) {
+                        db.run('UPDATE stock SET reserved_quantity = reserved_quantity - ? WHERE product_id = ?', [quantity, product]);
+                    }
+                    if (!res.headersSent) {
+                        res.status(500).json({ error: error.message || 'Failed to create checkout session' });
+                    }
                 }
             }
         });
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error in checkout endpoint:', error);
+        res.status(500).json({ error: error.message || 'Internal server error' });
     }
 });
 
@@ -412,27 +573,28 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
                             'Order Confirmation - MindChat',
                             emailContent
                         );
-                            
-                            // Send notification email to admin
-                            if (process.env.ADMIN_EMAIL) {
-                                sendEmail(
-                                    process.env.ADMIN_EMAIL,
-                                    `New Order Received - ${order.order_id}`,
-                                    `
-                                    <h2>New Order Received!</h2>
-                                    <p><strong>Order ID:</strong> ${order.order_id}</p>
-                                    <p><strong>Customer:</strong> ${order.customer_name}</p>
-                                    <p><strong>Email:</strong> ${order.customer_email}</p>
-                                    <p><strong>Product:</strong> ${order.product_name} x${order.quantity}</p>
-                                    <p><strong>Total:</strong> $${order.total_amount.toFixed(2)}</p>
-                                    <p><strong>Shipping Address:</strong> ${order.shipping_address}</p>
-                                    <p><a href="${process.env.FRONTEND_URL}/admin.html">View in Admin Panel</a></p>
-                                    `
-                                );
-                            }
+                        
+                        // Send notification email to admin
+                        if (process.env.ADMIN_EMAIL) {
+                            sendEmail(
+                                process.env.ADMIN_EMAIL,
+                                `New Order Received - ${order.order_id}`,
+                                `
+                                <h2>New Order Received!</h2>
+                                <p><strong>Order ID:</strong> ${order.order_id}</p>
+                                <p><strong>Customer:</strong> ${order.customer_name}</p>
+                                <p><strong>Email:</strong> ${order.customer_email}</p>
+                                <p><strong>Product:</strong> ${order.product_name} x${order.quantity}</p>
+                                <p><strong>Subtotal:</strong> $${order.total_amount.toFixed(2)}</p>
+                                ${order.discount_amount > 0 ? `<p><strong>Discount (${order.coupon_code || 'Coupon'}):</strong> -$${order.discount_amount.toFixed(2)}</p>` : ''}
+                                <p><strong>Total:</strong> $${(order.final_amount || order.total_amount).toFixed(2)}</p>
+                                <p><strong>Shipping Address:</strong> ${order.shipping_address}</p>
+                                <p><a href="${process.env.FRONTEND_URL}/admin.html">View in Admin Panel</a></p>
+                                `
+                            );
                         }
-                    });
-                }
+                    }
+                });
             }
         );
     }
@@ -1018,13 +1180,27 @@ app.get('/api/admin/stock', authenticateToken, (req, res) => {
     });
 });
 
-// Update stock
+// Update stock and pricing
 app.put('/api/admin/stock/:productId', authenticateToken, (req, res) => {
     const { productId } = req.params;
-    const { stock_quantity } = req.body;
+    const { stock_quantity, price, tax_rate, shipping_cost } = req.body;
     
-    if (stock_quantity === undefined || stock_quantity < 0) {
-        return res.status(400).json({ error: 'Valid stock quantity required' });
+    // Validate stock quantity if provided
+    if (stock_quantity !== undefined) {
+        if (stock_quantity < 0) {
+            return res.status(400).json({ error: 'Valid stock quantity required' });
+        }
+    }
+    
+    // Validate pricing if provided
+    if (price !== undefined && price < 0) {
+        return res.status(400).json({ error: 'Price must be >= 0' });
+    }
+    if (tax_rate !== undefined && (tax_rate < 0 || tax_rate > 1)) {
+        return res.status(400).json({ error: 'Tax rate must be between 0 and 1 (0-100%)' });
+    }
+    if (shipping_cost !== undefined && shipping_cost < 0) {
+        return res.status(400).json({ error: 'Shipping cost must be >= 0' });
     }
     
     // Check current stock to ensure we don't set below reserved
@@ -1036,25 +1212,51 @@ app.put('/api/admin/stock/:productId', authenticateToken, (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
         
-        if (stock_quantity < currentStock.reserved_quantity) {
+        if (stock_quantity !== undefined && stock_quantity < currentStock.reserved_quantity) {
             return res.status(400).json({ 
                 error: `Stock cannot be set below reserved quantity (${currentStock.reserved_quantity} units reserved)` 
             });
         }
         
-        db.run(
-            'UPDATE stock SET stock_quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE product_id = ?',
-            [stock_quantity, productId],
-            function(err) {
-                if (err) {
-                    return res.status(500).json({ error: 'Database error' });
-                }
-                if (this.changes === 0) {
-                    return res.status(404).json({ error: 'Product not found' });
-                }
-                res.json({ success: true });
+        // Build update query dynamically
+        const updates = [];
+        const params = [];
+        
+        if (stock_quantity !== undefined) {
+            updates.push('stock_quantity = ?');
+            params.push(stock_quantity);
+        }
+        if (price !== undefined) {
+            updates.push('price = ?');
+            params.push(price);
+        }
+        if (tax_rate !== undefined) {
+            updates.push('tax_rate = ?');
+            params.push(tax_rate);
+        }
+        if (shipping_cost !== undefined) {
+            updates.push('shipping_cost = ?');
+            params.push(shipping_cost);
+        }
+        
+        if (updates.length === 0) {
+            return res.status(400).json({ error: 'No fields to update' });
+        }
+        
+        updates.push('updated_at = CURRENT_TIMESTAMP');
+        params.push(productId);
+        
+        const query = `UPDATE stock SET ${updates.join(', ')} WHERE product_id = ?`;
+        
+        db.run(query, params, function(err) {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
             }
-        );
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            res.json({ success: true });
+        });
     });
 });
 
@@ -1071,7 +1273,10 @@ app.get('/api/stock/:productId', (req, res) => {
         res.json({
             available: stock.stock_quantity - stock.reserved_quantity,
             total: stock.stock_quantity,
-            reserved: stock.reserved_quantity
+            reserved: stock.reserved_quantity,
+            price: stock.price || 249.00,
+            tax_rate: stock.tax_rate || 0.08,
+            shipping_cost: stock.shipping_cost || 15.00
         });
     });
 });
@@ -1106,10 +1311,7 @@ app.post('/api/admin/seed-orders', authenticateToken, (req, res) => {
         return arr[Math.floor(Math.random() * arr.length)];
     }
     
-    function generateOrderId() {
-        return 'ORD-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 5).toUpperCase();
-    }
-    
+    // Use the standardized generateOrderId function (already defined above)
     const orders = [];
     const now = new Date();
     
