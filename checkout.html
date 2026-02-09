@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | MindChat</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 8rem;
+        }
+        .checkout-summary {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .checkout-form {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        .order-total {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .product-preview {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .product-preview-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+        .product-preview-info h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        .product-preview-info p {
+            margin: 0;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        .product-preview-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-left: auto;
+        }
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+        .quantity-btn {
+            background: var(--light);
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            transition: background 0.2s;
+        }
+        .quantity-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .quantity-input:focus {
+            outline: none;
+        }
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+            .product-preview {
+                flex-direction: column;
+                text-align: center;
+            }
+            .product-preview-price {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="navbar">
+        <div class="navbar-container container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MindChat Logo" width="32" height="32">
+                <span>MindChat</span>
+            </a>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item"><a href="science.html" class="nav-link">Scientific Research</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="buy.html" class="nav-link">
+                        Buy Now
+                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="order-tracking.html" class="dropdown-item">Order Tracking</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact Us</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link">
+                        Sign Up
+                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="https://mindchat-frontend.greenmoss-93c808c0.eastus.azurecontainerapps.io/organization/signup" class="dropdown-item">Organization</a>
+                        <a href="https://mindchat-frontend.greenmoss-93c808c0.eastus.azurecontainerapps.io/clinic/signup" class="dropdown-item">Clinic</a>
+                        <a href="https://mindchat-frontend.greenmoss-93c808c0.eastus.azurecontainerapps.io/provider/signup" class="dropdown-item">Provider</a>
+                        <a href="https://mindchat-frontend.greenmoss-93c808c0.eastus.azurecontainerapps.io/signup" class="dropdown-item">Consumer</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="https://mindchat-frontend.greenmoss-93c808c0.eastus.azurecontainerapps.io/login" class="nav-cta">Sign In</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="checkout-container">
+        <div class="checkout-form">
+            <h2 style="margin-bottom: 2rem;">Checkout</h2>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <!-- Product Preview -->
+            <div class="product-preview">
+                <img src="images/muse4.jpg" alt="Muse 2 EEG Headset" class="product-preview-image">
+                <div class="product-preview-info" style="flex: 1;">
+                    <h4>Muse 2 EEG Headset</h4>
+                    <p>Professional EEG headset for mental health monitoring</p>
+                    <div class="quantity-selector">
+                        <label style="font-weight: 600; color: var(--dark);">Quantity:</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" id="decreaseQty">−</button>
+                            <input type="number" id="quantityInput" class="quantity-input" value="1" min="1" max="99">
+                            <button type="button" class="quantity-btn" id="increaseQty">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-preview-price" id="previewPrice">$249.00</div>
+            </div>
+            
+            <form id="checkoutForm">
+                <h3 style="margin-bottom: 1rem;">Shipping Information</h3>
+                
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="address">Street Address *</label>
+                    <input type="text" id="address" name="address" class="form-control" required>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="city">City *</label>
+                        <input type="text" id="city" name="city" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="state">State *</label>
+                        <select id="state" name="state" class="form-control" required>
+                            <option value="">Select State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="zipcode">ZIP Code *</label>
+                    <input type="text" id="zipcode" name="zipcode" class="form-control" pattern="[0-9]{5}" required>
+                </div>
+                
+                <!-- Coupon Code Section -->
+                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0, 0, 0, 0.1);">
+                    <label class="form-label" for="couponCode">Coupon Code (Optional)</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="couponCode" name="couponCode" class="form-control" placeholder="Enter coupon code" style="text-transform: uppercase;">
+                        <button type="button" class="btn btn-secondary" id="applyCouponBtn" onclick="applyCoupon()">Apply</button>
+                    </div>
+                    <div id="couponMessage" style="margin-top: 0.5rem; font-size: 0.875rem; display: none;"></div>
+                </div>
+                
+                <!-- Stock Availability Message -->
+                <div id="stockMessage" style="margin-bottom: 1rem; padding: 1rem; border-radius: var(--border-radius-sm); display: none;"></div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;" id="checkoutBtn">
+                    Proceed to Payment
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <p>Processing your order...</p>
+            </div>
+        </div>
+        
+        <div class="checkout-summary">
+            <h3 style="margin-bottom: 1.5rem;">Order Summary</h3>
+            <div id="orderSummary">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="order-total">
+                <span>Total:</span>
+                <span id="orderTotal">$0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Get cart from localStorage or URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product') || 'muse2';
+        const quantity = parseInt(urlParams.get('quantity')) || 1;
+        
+        // Product data (will be loaded from API)
+        const products = {
+            muse2: {
+                name: 'Muse 2 EEG Headset',
+                price: 249.00,
+                image: 'images/muse4.jpg',
+                tax_rate: 0.08,
+                shipping_cost: 15.00
+            }
+        };
+        
+        let product = products[productId] || products.muse2;
+        
+        // Initialize quantity from URL or default to 1
+        let currentQuantity = parseInt(urlParams.get('quantity')) || 1;
+        document.getElementById('quantityInput').value = currentQuantity;
+        
+        // Initialize coupon state (reset on page load)
+        let appliedCoupon = null;
+        let discountAmount = 0;
+        const API_BASE = 'http://localhost:3001/api';
+        
+        // Clear any existing coupon state on page load
+        document.getElementById('couponCode').value = '';
+        document.getElementById('couponMessage').style.display = 'none';
+        
+        // Load product pricing and check stock availability
+        async function checkStock() {
+            try {
+                const response = await fetch(`${API_BASE}/stock/${productId}`);
+                const data = await response.json();
+                
+                // Update product pricing from database
+                if (data.price) product.price = parseFloat(data.price);
+                if (data.tax_rate) product.tax_rate = parseFloat(data.tax_rate);
+                if (data.shipping_cost) product.shipping_cost = parseFloat(data.shipping_cost);
+                
+                const stockMessage = document.getElementById('stockMessage');
+                if (data.available < currentQuantity) {
+                    stockMessage.style.display = 'block';
+                    stockMessage.style.background = '#fee';
+                    stockMessage.style.color = '#c33';
+                    stockMessage.innerHTML = `⚠️ Only ${data.available} units available. Please reduce quantity.`;
+                    document.getElementById('checkoutBtn').disabled = true;
+                } else if (data.available < 10) {
+                    stockMessage.style.display = 'block';
+                    stockMessage.style.background = '#fef3c7';
+                    stockMessage.style.color = '#92400e';
+                    stockMessage.innerHTML = `⚠️ Low stock: Only ${data.available} units remaining!`;
+                    document.getElementById('checkoutBtn').disabled = false;
+                } else {
+                    stockMessage.style.display = 'none';
+                    document.getElementById('checkoutBtn').disabled = false;
+                }
+                
+                // Update prices after loading product data
+                updatePrices();
+            } catch (err) {
+                console.error('Error checking stock:', err);
+            }
+        }
+        
+        // Apply coupon code
+        async function applyCoupon() {
+            const couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
+            const couponMessage = document.getElementById('couponMessage');
+            
+            if (!couponCode) {
+                couponMessage.style.display = 'block';
+                couponMessage.style.color = '#c33';
+                couponMessage.textContent = 'Please enter a coupon code';
+                return;
+            }
+            
+            try {
+                const subtotal = product.price * currentQuantity;
+                const shipping = product.shipping_cost || 15.00;
+                const tax = subtotal * (product.tax_rate || 0.08);
+                const totalBeforeDiscount = subtotal + shipping + tax;
+                
+                const response = await fetch(`${API_BASE}/coupons/validate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: couponCode, amount: totalBeforeDiscount })
+                });
+                
+                const data = await response.json();
+                
+                if (data.valid) {
+                    appliedCoupon = couponCode;
+                    discountAmount = data.discount;
+                    couponMessage.style.display = 'block';
+                    couponMessage.style.color = '#065f46';
+                    couponMessage.innerHTML = `✅ Coupon applied! You saved $${discountAmount.toFixed(2)}`;
+                    updatePrices();
+                } else {
+                    appliedCoupon = null;
+                    discountAmount = 0;
+                    couponMessage.style.display = 'block';
+                    couponMessage.style.color = '#c33';
+                    couponMessage.textContent = data.error || 'Invalid coupon code';
+                    updatePrices();
+                }
+            } catch (err) {
+                couponMessage.style.display = 'block';
+                couponMessage.style.color = '#c33';
+                couponMessage.textContent = 'Error validating coupon. Please try again.';
+            }
+        }
+        
+        // Function to calculate and update prices
+        function updatePrices() {
+            const subtotal = product.price * currentQuantity;
+            const shipping = product.shipping_cost || 15.00;
+            const tax = subtotal * (product.tax_rate || 0.08);
+            const totalBeforeDiscount = subtotal + shipping + tax;
+            const finalTotal = totalBeforeDiscount - discountAmount;
+            
+            // Update product preview price
+            document.getElementById('previewPrice').textContent = `$${(product.price * currentQuantity).toFixed(2)}`;
+            
+            // Update order summary
+            let summaryHTML = `
+            <div class="product-item">
+                <div>
+                    <strong>${product.name}</strong>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">Quantity: ${currentQuantity}</p>
+                </div>
+                <div>$${product.price.toFixed(2)}</div>
+            </div>
+            <div class="product-item">
+                <span>Subtotal</span>
+                <span>$${subtotal.toFixed(2)}</span>
+            </div>
+            <div class="product-item">
+                <span>Shipping</span>
+                <span>$${shipping.toFixed(2)}</span>
+            </div>
+            <div class="product-item">
+                <span>Tax</span>
+                <span>$${tax.toFixed(2)}</span>
+            </div>
+        `;
+        
+            if (discountAmount > 0) {
+                summaryHTML += `
+                    <div class="product-item" style="color: var(--success);">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                            Discount (${appliedCoupon})
+                        </span>
+                        <span>-$${discountAmount.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('orderSummary').innerHTML = summaryHTML;
+            
+            // Update total
+            document.getElementById('orderTotal').textContent = `$${finalTotal.toFixed(2)}`;
+            
+            // Update URL without reload (but don't add coupon to URL to prevent auto-apply on refresh)
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('quantity', currentQuantity);
+            // Don't add coupon to URL - it causes auto-apply on refresh
+            newUrl.searchParams.delete('coupon');
+            window.history.replaceState({}, '', newUrl);
+            
+            // Check stock
+            checkStock();
+        }
+        
+        // Quantity control buttons
+        document.getElementById('increaseQty').addEventListener('click', () => {
+            if (currentQuantity < 99) {
+                currentQuantity++;
+                document.getElementById('quantityInput').value = currentQuantity;
+                updatePrices();
+            }
+        });
+        
+        document.getElementById('decreaseQty').addEventListener('click', () => {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                document.getElementById('quantityInput').value = currentQuantity;
+                updatePrices();
+            }
+        });
+        
+        // Quantity input change handler
+        document.getElementById('quantityInput').addEventListener('change', (e) => {
+            let newQty = parseInt(e.target.value);
+            if (isNaN(newQty) || newQty < 1) {
+                newQty = 1;
+            } else if (newQty > 99) {
+                newQty = 99;
+            }
+            currentQuantity = newQty;
+            e.target.value = currentQuantity;
+            updatePrices();
+        });
+        
+        // Reset coupon state FIRST (before any updates)
+        appliedCoupon = null;
+        discountAmount = 0;
+        
+        // Check for coupon in URL (pre-fill but don't auto-apply)
+        const urlCoupon = urlParams.get('coupon');
+        if (urlCoupon) {
+            // Pre-fill the coupon code field (but don't apply)
+            document.getElementById('couponCode').value = urlCoupon;
+            // Remove coupon from URL immediately to prevent auto-application on refresh
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('coupon');
+            window.history.replaceState({}, '', newUrl);
+            // Don't auto-apply - user must click "Apply" button
+        } else {
+            // Ensure coupon field is empty if no URL parameter
+            document.getElementById('couponCode').value = '';
+        }
+        
+        // Clear coupon message
+        document.getElementById('couponMessage').style.display = 'none';
+        
+        // Initial price update and stock check (with reset coupon state)
+        updatePrices();
+        
+        // Prevent duplicate submissions
+        let isSubmitting = false;
+        
+        // Initialize Stripe once
+        const stripe = Stripe('pk_test_51SScpnDLOLWBXVi6P4Ag3TJC3SkfKElOhXpZA6AgbywkOGGFVGUfKj9edMGBoQzgxKUSpgLk9rs13cQFzWmO0zH300R5vwg3ux');
+        
+        // Handle form submission
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Prevent duplicate submissions
+            if (isSubmitting) {
+                console.log('Already submitting, please wait...');
+                return;
+            }
+            
+            isSubmitting = true;
+            
+            const errorDiv = document.getElementById('errorMessage');
+            const loadingDiv = document.getElementById('loading');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            errorDiv.style.display = 'none';
+            checkoutBtn.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            
+            try {
+                // Get current quantity and recalculate totals
+                const finalQuantity = parseInt(document.getElementById('quantityInput').value) || 1;
+                const finalSubtotal = product.price * finalQuantity;
+                const finalShipping = product.shipping_cost || 15.00;
+                const finalTax = finalSubtotal * (product.tax_rate || 0.08);
+                const finalTotalBeforeDiscount = finalSubtotal + finalShipping + finalTax;
+                const finalTotal = finalTotalBeforeDiscount - discountAmount;
+                
+                // Collect form data
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zipcode: document.getElementById('zipcode').value,
+                    product: productId,
+                    quantity: finalQuantity,
+                    total: finalTotalBeforeDiscount,
+                    coupon_code: appliedCoupon || null
+                };
+                
+                // Call backend to create checkout session
+                const response = await fetch(`${API_BASE}/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                // Check if response is OK
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Server error' }));
+                    throw new Error(errorData.error || `Server error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Redirect to Stripe Checkout (only once)
+                if (data.sessionId) {
+                    console.log('Redirecting to Stripe checkout...');
+                    const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+                    
+                    // If redirect fails, show error
+                    if (result.error) {
+                        throw new Error(result.error.message);
+                    }
+                    // If successful, the page will redirect, so we don't need to do anything else
+                } else {
+                    throw new Error('No session ID received from server');
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                isSubmitting = false; // Reset flag on error
+                errorDiv.textContent = error.message || 'An error occurred. Please try again.';
+                errorDiv.style.display = 'block';
+                checkoutBtn.style.display = 'block';
+                loadingDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+
