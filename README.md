@@ -201,5 +201,5 @@ MindChat is a **mental wellness support tool** and is NOT:
 
 ## 📄 License
 
-Copyright © 2025 MindChat. All rights reserved.
+Copyright © 2026 MindChat. All rights reserved.
 
